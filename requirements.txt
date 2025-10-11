@@ -1,0 +1,9 @@
+torch
+transformers
+peft
+datasets
+pandas
+scikit-learn
+Pillow
+requests
+mlflow

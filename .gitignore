@@ -1,0 +1,47 @@
+# Ignore user-specified directories
+train_images/
+test_images/
+
+# Ignore model and data directories
+clip-lora-finetuned-local/
+dataset/
+metrics/
+mlruns/
+
+# Ignore common IDE and environment files
+.cache/
+.config/
+.dotnet/
+.gemini/
+.idea/
+.ipython/
+.lightning_studio/
+.npm/
+.nv/
+.vscode/
+src/__pycache__/
+*.ipynb
+*.csv
+*.pt
+*.safetensors
+*~
+.env
+.venv
+env/
+venv/
+.idea/
+*.swp
+*.swo
+logs/
+*.log
+.DS_Store
+Thumbs.db
+.ipynb_checkpoints
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+build/
+dist/
+*.egg-info/
+*.egg
