@@ -17,17 +17,19 @@ from tqdm import tqdm
 import optuna
 from optuna.integration import XGBoostPruningCallback
 import mlflow
+import cupy as cp
 
 # --- Configuration ---
 PARAMS = {
-    'RUN_NAME': 'Qwen2-XGBoost-with-Inference',
+    'RUN_NAME': 'Qwen3-XGBoost-with-Inference',
     'DATASET_FOLDER': 'dataset/',
-    'MODEL_NAME': 'Qwen/Qwen3-Embedding-4B',
+    'MODEL_NAME': 'Qwen/Qwen3-Embedding-0.6B',
     'TEXT_COLUMN': 'catalog_content',
     'TARGET_COLUMN': 'price',
-    'BATCH_SIZE': 64,
+    'BATCH_SIZE': 32,
     'RANDOM_STATE': 42,
-    'optuna_n_trials': 30,
+    'optuna_n_trials': 10,
+    'DATA_PERCENTAGE': 1,
 }
 
 def get_embeddings(texts, model, tokenizer, device, batch_size):
@@ -37,7 +39,7 @@ def get_embeddings(texts, model, tokenizer, device, batch_size):
     all_embeddings = []
     for i in tqdm(range(0, len(texts), batch_size), desc="Embedding Batches"):
         batch_texts = texts[i:i+batch_size]
-        inputs = tokenizer(batch_texts, return_tensors='pt', padding=True, truncation=True, max_length=512).to(device)
+        inputs = tokenizer(batch_texts, return_tensors='pt', padding=True, truncation=True, max_length=2048).to(device)
         with torch.no_grad(), torch.amp.autocast(device_type=device.type, enabled=(device.type == 'cuda')):
             outputs = model(**inputs, output_hidden_states=True)
         hidden_states = outputs.hidden_states[-1]
@@ -72,7 +74,7 @@ def run_inference(embedding_model, tokenizer, regressor_model, params, device):
     test_embeddings = get_embeddings(test_texts, embedding_model, tokenizer, device, params['BATCH_SIZE'])
 
     print("Making predictions with final XGBoost model...")
-    test_predictions = regressor_model.predict(test_embeddings)
+    test_predictions = regressor_model.predict(cp.asarray(test_embeddings))
 
     submission_df = pd.DataFrame({'sample_id': test_df['sample_id'], 'price': test_predictions})
 
@@ -106,6 +108,10 @@ def main():
         except FileNotFoundError:
             print(f"Error: Training data not found. Please ensure 'train_filtered.csv' is in '{PARAMS['DATASET_FOLDER']}'.")
             return
+
+        if PARAMS.get('DATA_PERCENTAGE', 1.0) < 1.0:
+            print(f"Using {PARAMS['DATA_PERCENTAGE']*100}% of the data for training.")
+            train_df = train_df.sample(frac=PARAMS['DATA_PERCENTAGE'], random_state=PARAMS['RANDOM_STATE'])
         
         train_df, val_df = train_test_split(train_df, test_size=0.1, random_state=PARAMS['RANDOM_STATE'])
 
@@ -119,33 +125,43 @@ def main():
         def objective(trial):
             xgb_params = {
                 'objective': 'reg:squarederror', 'eval_metric': 'rmse',
+                'tree_method': 'hist', 'device': 'cuda', # Use GPU for training
                 'n_estimators': trial.suggest_int('n_estimators', 400, 2000, step=100),
                 'learning_rate': trial.suggest_float('learning_rate', 1e-3, 0.1, log=True),
                 'max_depth': trial.suggest_int('max_depth', 3, 10),
                 'subsample': trial.suggest_float('subsample', 0.6, 1.0),
                 'colsample_bytree': trial.suggest_float('colsample_bytree', 0.6, 1.0),
-                'random_state': PARAMS['RANDOM_STATE'], 'n_jobs': 18,
+                'random_state': PARAMS['RANDOM_STATE'],
             }
-            model = xgb.XGBRegressor(**xgb_params)
-            model.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=False, callbacks=[XGBoostPruningCallback(trial, "validation_0-rmse")])
-            preds = model.predict(X_val)
+            pruning_callback = XGBoostPruningCallback(trial, "validation_0-rmse")
+            model = xgb.XGBRegressor(**xgb_params, callbacks=[pruning_callback])
+            model.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=False)
+            preds = model.predict(cp.asarray(X_val))
             return mean_squared_error(y_val, preds)
 
         print("\n--- Starting Optuna Hyperparameter Optimization ---")
         study = optuna.create_study(direction='minimize', pruner=optuna.pruners.MedianPruner(n_warmup_steps=5))
-        study.optimize(objective, n_trials=PARAMS['optuna_n_trials'])
+        
+        n_trials = PARAMS['optuna_n_trials']
+        with tqdm(total=n_trials, desc="Optuna Optimization") as pbar:
+            def callback(study, trial):
+                pbar.update(1)
+            study.optimize(objective, n_trials=n_trials, callbacks=[callback])
         print("Optimization finished.")
         mlflow.log_params(study.best_params)
         mlflow.log_metric("best_trial_mse", study.best_value)
 
         # 4. Train Final Model and Evaluate
         print("\nTraining final model with best hyperparameters...")
-        final_model = xgb.XGBRegressor(**study.best_params, random_state=PARAMS['RANDOM_STATE'], n_jobs=18)
+        best_params_gpu = study.best_params.copy()
+        best_params_gpu['tree_method'] = 'hist'
+        best_params_gpu['device'] = 'cuda'
+        final_model = xgb.XGBRegressor(**best_params_gpu, random_state=PARAMS['RANDOM_STATE'])
         final_model.fit(X_train, y_train)
 
         print("Evaluating final model...")
-        train_preds = final_model.predict(X_train)
-        val_preds = final_model.predict(X_val)
+        train_preds = final_model.predict(cp.asarray(X_train))
+        val_preds = final_model.predict(cp.asarray(X_val))
 
         train_metrics = {
             "train_mse": mean_squared_error(y_train, train_preds),
@@ -178,5 +194,5 @@ def main():
         run_inference(embedding_model, tokenizer, final_model, PARAMS, device)
 
 if __name__ == "__main__":
-    mlflow.set_experiment("QWEN2 Price Prediction")
+    mlflow.set_experiment("QWEN3 Price Prediction")
     main()

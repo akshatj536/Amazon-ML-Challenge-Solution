@@ -1,10 +1,10 @@
 {
-  "numStartups": 5,
+  "numStartups": 9,
   "installMethod": "unknown",
   "autoUpdates": true,
   "theme": "dark-ansi",
   "tipsHistory": {
-    "new-user-warmup": 1,
+    "new-user-warmup": 7,
     "plan-mode-for-complex-tasks": 1,
     "terminal-setup": 2,
     "shift-enter": 2,
@@ -12,7 +12,7 @@
     "theme-command": 2,
     "status-line": 2,
     "ide-hotkey": 2,
-    "prompt-queue": 2,
+    "prompt-queue": 8,
     "enter-to-steer-in-relatime": 2,
     "todo-list": 2,
     "# for memory": 2,
@@ -23,7 +23,8 @@
     "shift-tab": 2,
     "image-paste": 2,
     "tab-toggle-thinking": 2,
-    "ultrathink-keyword": 2
+    "ultrathink-keyword": 2,
+    "custom-agents": 7
   },
   "cachedStatsigGates": {
     "tengu_disable_bypass_permissions_mode": false,
@@ -50,6 +51,30 @@
     "/teamspace/studios/this_studio": {
       "allowedTools": [],
       "history": [
+        {
+          "display": "if one epoch takes 1 hours, then how much time is this going to take?",
+          "pastedContents": {}
+        },
+        {
+          "display": "optuna is used for hyperparameter optimization right?",
+          "pastedContents": {}
+        },
+        {
+          "display": "add optuna in @src/neoBert.py, make no changes to the code structure only minimalistic code (dont forget to inlucde all that in ML flow)",
+          "pastedContents": {}
+        },
+        {
+          "display": "now check for any bugs",
+          "pastedContents": {}
+        },
+        {
+          "display": "in @src/neoBert.py can you please let me know what else can i do to improve the score of the model",
+          "pastedContents": {}
+        },
+        {
+          "display": "  in @src/neoBert.py use Neobert      ",
+          "pastedContents": {}
+        },
         {
           "display": "i want to mlflow tracking. When i am going to port viewer here in lightningai , clicked on MLflow which is present at port 5000, it shows \"Nothing running here yet\nEnsure that an app or server is active on port 5000\" how can i fix this",
           "pastedContents": {}
@@ -154,31 +179,38 @@
       "projectOnboardingSeenCount": 4,
       "hasClaudeMdExternalIncludesApproved": false,
       "hasClaudeMdExternalIncludesWarningShown": false,
-      "exampleFiles": [],
-      "lastCost": 0.000132,
-      "lastAPIDuration": 991,
-      "lastToolDuration": 0,
-      "lastDuration": 719706,
-      "lastLinesAdded": 0,
-      "lastLinesRemoved": 0,
-      "lastTotalInputTokens": 135,
-      "lastTotalOutputTokens": 6,
-      "lastTotalCacheCreationInputTokens": 0,
-      "lastTotalCacheReadInputTokens": 0,
+      "exampleFiles": [
+        "train.py",
+        "validation_plot.png",
+        "GEMINI.md",
+        ".gitignore",
+        ".claude.json"
+      ],
       "lastTotalWebSearchRequests": 0,
-      "lastSessionId": "b8dc898c-549b-423b-9db3-32682bbf26b9"
+      "exampleFilesGeneratedAt": 1760275449509,
+      "lastCost": 0.34929885,
+      "lastAPIDuration": 124387,
+      "lastToolDuration": 555,
+      "lastDuration": 692816,
+      "lastLinesAdded": 96,
+      "lastLinesRemoved": 32,
+      "lastTotalInputTokens": 430,
+      "lastTotalOutputTokens": 6474,
+      "lastTotalCacheCreationInputTokens": 41597,
+      "lastTotalCacheReadInputTokens": 321779,
+      "lastSessionId": "02bf2826-3825-4b3f-8a9d-439e3012ca22"
     }
   },
   "hasInitOnboardingBeenShown": true,
   "hasIdeOnboardingBeenShown": {
     "vscode": true
   },
-  "lastPlanModeUse": 1760247024457,
+  "lastPlanModeUse": 1760281453800,
   "s1mAccessCache": {
     "53f071d7-ee92-4add-a498-58e7297de27f": {
       "hasAccess": false,
       "hasAccessNotAsDefault": false,
-      "timestamp": 1760256270378
+      "timestamp": 1760281438217
     }
   },
   "fallbackAvailableWarningThreshold": 0.5,

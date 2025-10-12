@@ -22,3 +22,9 @@
 {"display":"/model ","pastedContents":{},"timestamp":1760254765852,"project":"/teamspace/studios/this_studio"}
 {"display":"/model ","pastedContents":{},"timestamp":1760254765853,"project":"/teamspace/studios/this_studio"}
 {"display":"i want to mlflow tracking. When i am going to port viewer here in lightningai , clicked on MLflow which is present at port 5000, it shows \"Nothing running here yet\nEnsure that an app or server is active on port 5000\" how can i fix this","pastedContents":{},"timestamp":1760255648680,"project":"/teamspace/studios/this_studio"}
+{"display":"  in @src/neoBert.py use Neobert      ","pastedContents":{},"timestamp":1760281548983,"project":"/teamspace/studios/this_studio"}
+{"display":"in @src/neoBert.py can you please let me know what else can i do to improve the score of the model","pastedContents":{},"timestamp":1760281874058,"project":"/teamspace/studios/this_studio"}
+{"display":"now check for any bugs","pastedContents":{},"timestamp":1760282128226,"project":"/teamspace/studios/this_studio"}
+{"display":"add optuna in @src/neoBert.py, make no changes to the code structure only minimalistic code (dont forget to inlucde all that in ML flow)","pastedContents":{},"timestamp":1760283351855,"project":"/teamspace/studios/this_studio"}
+{"display":"optuna is used for hyperparameter optimization right?","pastedContents":{},"timestamp":1760283610511,"project":"/teamspace/studios/this_studio"}
+{"display":"if one epoch takes 1 hours, then how much time is this going to take?","pastedContents":{},"timestamp":1760283659843,"project":"/teamspace/studios/this_studio"}
