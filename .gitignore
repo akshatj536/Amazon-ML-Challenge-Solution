@@ -7,12 +7,16 @@ clip-lora-finetuned-local/
 dataset/
 metrics/
 mlruns/
+submission/
 
 # Ignore common IDE and environment files
 .cache/
 .config/
 .dotnet/
 .gemini/
+.claude/
+.claude.json
+.claude.json.backup
 .idea/
 .ipython/
 .lightning_studio/
