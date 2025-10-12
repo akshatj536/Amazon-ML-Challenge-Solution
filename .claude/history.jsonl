@@ -12,3 +12,13 @@
 {"display":"akshitm  2245299  0.0  0.0   7096  2080 pts/67   S+   05:46   0:00 grep --color=auto --exclude-dir=.bzr --exclude-dir=CVS --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn --exclude-dir=.idea --exclude-dir=.tox --exclude-dir=.venv --exclude-dir=venv mlflow","pastedContents":{},"timestamp":1760247996237,"project":"/teamspace/studios/this_studio"}
 {"display":"[Pasted text #1 +22 lines]","pastedContents":{},"timestamp":1760248386346,"project":"/teamspace/studios/this_studio"}
 {"display":"⚡ main ~ pkill -9 -f mlflow\n⚡ main ~ sleep 2\n⚡ main ~ mlflow ui --host 0.0.0.0 --port 5001\n/home/zeus/miniconda3/envs/cloudspace/lib/python3.12/site-packages/mlflow/gateway/config.py:454: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/\n  class Route(ConfigModel):\nERROR:    [Errno 98] Address already in use\nRunning the mlflow server failed. Please see the logs above for details. ","pastedContents":{},"timestamp":1760248477240,"project":"/teamspace/studios/this_studio"}
+{"display":"i wanted to use mlflow, but i am going to port viewer and selecting Mlflow on port 5000, but i am getting \"Nothing running here yet\nEnsure that an app or server is active on port 5000\". Fix this.","pastedContents":{},"timestamp":1760254013449,"project":"/teamspace/studios/this_studio"}
+{"display":"hi","pastedContents":{},"timestamp":1760254039904,"project":"/teamspace/studios/this_studio"}
+{"display":"hi","pastedContents":{},"timestamp":1760254530650,"project":"/teamspace/studios/this_studio"}
+{"display":"/login ","pastedContents":{},"timestamp":1760254739794,"project":"/teamspace/studios/this_studio"}
+{"display":"/login ","pastedContents":{},"timestamp":1760254739799,"project":"/teamspace/studios/this_studio"}
+{"display":"/login ","pastedContents":{},"timestamp":1760254739800,"project":"/teamspace/studios/this_studio"}
+{"display":"/model ","pastedContents":{},"timestamp":1760254765846,"project":"/teamspace/studios/this_studio"}
+{"display":"/model ","pastedContents":{},"timestamp":1760254765852,"project":"/teamspace/studios/this_studio"}
+{"display":"/model ","pastedContents":{},"timestamp":1760254765853,"project":"/teamspace/studios/this_studio"}
+{"display":"i want to mlflow tracking. When i am going to port viewer here in lightningai , clicked on MLflow which is present at port 5000, it shows \"Nothing running here yet\nEnsure that an app or server is active on port 5000\" how can i fix this","pastedContents":{},"timestamp":1760255648680,"project":"/teamspace/studios/this_studio"}
