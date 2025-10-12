@@ -3,10 +3,9 @@ import time
 import pandas as pd
 import torch
 from torch.utils.data import Dataset, DataLoader
-from transformers import CLIPProcessor, CLIPModel
+from transformers import AutoTokenizer, AutoModel
 from torch.optim import AdamW
 from peft import LoraConfig, get_peft_model
-from PIL import Image
 from tqdm import tqdm
 from sklearn.model_selection import train_test_split
 import mlflow
@@ -55,10 +54,9 @@ class SMAPELoss(torch.nn.Module):
 
 # --- Dataset Definition (reading from disk) ---
 class PriceDataset(Dataset):
-    def __init__(self, dataframe, processor, image_dir):
+    def __init__(self, dataframe, tokenizer):
         self.dataframe = dataframe
-        self.processor = processor
-        self.image_dir = image_dir
+        self.tokenizer = tokenizer
 
     def __len__(self):
         return len(self.dataframe)
@@ -66,22 +64,14 @@ class PriceDataset(Dataset):
     def __getitem__(self, idx):
         row = self.dataframe.iloc[idx]
         text = row['catalog_content']
-        image_url = row['image_link']
         price = torch.tensor(row['price'], dtype=torch.float)
 
-        image_path = os.path.join(self.image_dir, os.path.basename(image_url))
-        try:
-            image = Image.open(image_path).convert("RGB")
-        except (FileNotFoundError, TypeError):
-            image = Image.new('RGB', (224, 224), (255, 255, 255)) # Placeholder
-
-        # Process each item individually
-        inputs = self.processor(text=[text], images=image, return_tensors="pt", padding='max_length', truncation=True)
+        # Process text only
+        inputs = self.tokenizer(text, return_tensors="pt", padding='max_length', truncation=True, max_length=512)
 
         return {
             'input_ids': inputs['input_ids'].squeeze(),
             'attention_mask': inputs['attention_mask'].squeeze(),
-            'pixel_values': inputs['pixel_values'].squeeze(),
             'price': price
         }
 
@@ -99,49 +89,42 @@ def main(params):
 
         train_df, val_df = train_test_split(train_df, test_size=0.1, random_state=42)
 
-        print("Initializing model and processor...")
-        processor = CLIPProcessor.from_pretrained(params['MODEL_NAME'],use_fast=True)
-        model = CLIPModel.from_pretrained(params['MODEL_NAME'])
+        print("Initializing model and tokenizer...")
+        tokenizer = AutoTokenizer.from_pretrained(params['MODEL_NAME'], trust_remote_code=True)
+        model = AutoModel.from_pretrained(params['MODEL_NAME'], trust_remote_code=True)
 
-        regressor = Regressor(model.config.projection_dim * 2, params['regressor_width'], params['regressor_depth'], params['DROPOUT_RATE'])
+
+        regressor = Regressor(model.config.hidden_size, params['regressor_width'], params['regressor_depth'], params['DROPOUT_RATE'])
         model.add_module("regressor", regressor)
 
         # --- Fine-tuning strategy logic ---
-        if params.get('USE_LORA') and params.get('FREEZE_EMBEDDING_MODEL'):
-            raise ValueError("USE_LORA and FREEZE_EMBEDDING_MODEL cannot be True at the same time.")
-
         if params.get('USE_LORA'):
             print("Configuring LoRA...")
             lora_config = LoraConfig(
                 r=params['lora_r'],
                 lora_alpha=params['lora_alpha'],
-                target_modules=["q_proj", "v_proj"],
+                target_modules=["query", "key", "value"],
                 lora_dropout=params['lora_dropout'],
                 bias="none",
             )
             model = get_peft_model(model, lora_config)
             model.print_trainable_parameters()
-        elif params.get('FREEZE_EMBEDDING_MODEL'):
-            print("Freezing CLIP model weights. Training only the regressor head.")
-            for name, param in model.named_parameters():
-                if 'regressor' not in name:
-                    param.requires_grad = False
 
         print("Creating datasets and dataloaders...")
-        train_dataset = PriceDataset(train_df, processor, params['IMAGE_FOLDER'])
-        val_dataset = PriceDataset(val_df, processor, params['IMAGE_FOLDER'])
+        train_dataset = PriceDataset(train_df, tokenizer)
+        val_dataset = PriceDataset(val_df, tokenizer)
 
         train_dataloader = DataLoader(
             train_dataset,
             batch_size=params['BATCH_SIZE'],
             shuffle=True,
-            num_workers=4,
+            num_workers=16,
             pin_memory=True
         )
         val_dataloader = DataLoader(
             val_dataset,
             batch_size=params['BATCH_SIZE'],
-            num_workers=2,
+            num_workers=16,
             pin_memory=True
         )
 
@@ -151,6 +134,7 @@ def main(params):
         
         optimizer = AdamW(model.parameters(), lr=params['LEARNING_RATE'], weight_decay=params['WEIGHT_DECAY'])
         loss_fn = SMAPELoss()
+        mse_loss_fn = torch.nn.MSELoss()
 
         # --- Mixed Precision Setup ---
         scaler = torch.amp.GradScaler("cuda")
@@ -160,31 +144,34 @@ def main(params):
         for epoch in range(params['NUM_EPOCHS']):
             model.train()
             total_loss = 0.0
+            total_mse_loss = 0.0
             for batch in tqdm(train_dataloader, desc=f"Epoch {epoch + 1}/{params['NUM_EPOCHS']}"):
                 optimizer.zero_grad()
 
                 input_ids = batch['input_ids'].to(device)
                 attention_mask = batch['attention_mask'].to(device)
-                pixel_values = batch['pixel_values'].to(device)
                 prices = batch['price'].to(device)
 
                 with torch.amp.autocast("cuda"):
-                    outputs = model(input_ids=input_ids, attention_mask=attention_mask, pixel_values=pixel_values)
-                    image_features = outputs.image_embeds
-                    text_features = outputs.text_embeds
-                    features = torch.cat([image_features, text_features], dim=1)
-                    predicted_price = model.regressor(features).squeeze(-1)
+                    outputs = model(input_ids=input_ids, attention_mask=attention_mask)
+                    cls_embedding = outputs.last_hidden_state[:, 0, :]
+                    predicted_price = model.regressor(cls_embedding).squeeze(-1)
                     loss = loss_fn(predicted_price, prices)
+                    mse_loss = mse_loss_fn(predicted_price, prices)
 
                 scaler.scale(loss).backward()
                 scaler.step(optimizer)
                 scaler.update()
 
                 total_loss += loss.item()
+                total_mse_loss += mse_loss.item()
 
             avg_train_loss = total_loss / len(train_dataloader)
-            print(f"Epoch {epoch + 1} - Average Training Loss: {avg_train_loss:.4f}")
-            mlflow.log_metric("avg_train_loss", avg_train_loss, step=epoch)
+            avg_train_mse = total_mse_loss / len(train_dataloader)
+            print(f"Epoch {epoch + 1} - Average Training SMAPE Loss: {avg_train_loss:.4f}")
+            print(f"Epoch {epoch + 1} - Average Training MSE Loss: {avg_train_mse:.4f}")
+            mlflow.log_metric("avg_train_smape_loss", avg_train_loss, step=epoch)
+            mlflow.log_metric("avg_train_mse_loss", avg_train_mse, step=epoch)
 
             # --- Validation Loop ---
             model.eval()
@@ -195,15 +182,12 @@ def main(params):
                 for batch in tqdm(val_dataloader, desc="Validation"):
                     input_ids = batch['input_ids'].to(device)
                     attention_mask = batch['attention_mask'].to(device)
-                    pixel_values = batch['pixel_values'].to(device)
                     prices = batch['price'].to(device)
 
                     with torch.amp.autocast("cuda"):
-                        outputs = model(input_ids=input_ids, attention_mask=attention_mask, pixel_values=pixel_values)
-                        image_features = outputs.image_embeds
-                        text_features = outputs.text_embeds
-                        features = torch.cat([image_features, text_features], dim=1)
-                        predicted_price = model.regressor(features).squeeze(-1)
+                        outputs = model(input_ids=input_ids, attention_mask=attention_mask)
+                        cls_embedding = outputs.last_hidden_state[:, 0, :]
+                        predicted_price = model.regressor(cls_embedding).squeeze(-1)
                         val_loss = loss_fn(predicted_price, prices)
 
                     total_val_loss += val_loss.item()
@@ -244,13 +228,13 @@ def main(params):
         print("Logging model artifacts to MLflow...")
         mlflow.log_artifacts(
             model_output_dir,
-            artifact_path="clip-lora-finetuned"
+            artifact_path="NeoBERT-finetuned"
         )
 
         # --- Run Inference on Test Set ---
-        run_inference(model, processor, params, device)
+        run_inference(model, tokenizer, params, device)
 
-def run_inference(model, processor, params, device):
+def run_inference(model, tokenizer, params, device):
     """
     Runs inference on the test set, creates a submission file, and logs it to MLflow.
     """
@@ -266,10 +250,9 @@ def run_inference(model, processor, params, device):
 
     # 2. Create a custom Test Dataset and DataLoader
     class TestDataset(Dataset):
-        def __init__(self, dataframe, processor, image_dir):
+        def __init__(self, dataframe, tokenizer):
             self.dataframe = dataframe
-            self.processor = processor
-            self.image_dir = image_dir
+            self.tokenizer = tokenizer
 
         def __len__(self):
             return len(self.dataframe)
@@ -279,25 +262,17 @@ def run_inference(model, processor, params, device):
             # Read the correct 'sample_id' column
             item_id = row['sample_id']
             text = row['catalog_content']
-            image_url = row['image_link']
 
-            image_path = os.path.join(self.image_dir, os.path.basename(image_url))
-            try:
-                image = Image.open(image_path).convert("RGB")
-            except (FileNotFoundError, TypeError):
-                image = Image.new('RGB', (224, 224), (255, 255, 255))
-
-            inputs = self.processor(text=[text], images=image, return_tensors="pt", padding='max_length', truncation=True)
+            inputs = self.tokenizer(text, return_tensors="pt", padding='max_length', truncation=True, max_length=512)
 
             return {
                 'sample_id': item_id,
                 'input_ids': inputs['input_ids'].squeeze(0),
                 'attention_mask': inputs['attention_mask'].squeeze(0),
-                'pixel_values': inputs['pixel_values'].squeeze(0)
             }
 
-    test_dataset = TestDataset(test_df, processor, params['TEST_IMAGE_FOLDER'])
-    test_dataloader = DataLoader(test_dataset, batch_size=params['BATCH_SIZE'], shuffle=False, num_workers=2)
+    test_dataset = TestDataset(test_df, tokenizer)
+    test_dataloader = DataLoader(test_dataset, batch_size=params['BATCH_SIZE'], shuffle=False, num_workers=16)
 
     # 3. Inference loop
     model.eval()
@@ -309,14 +284,11 @@ def run_inference(model, processor, params, device):
             
             input_ids = batch['input_ids'].to(device)
             attention_mask = batch['attention_mask'].to(device)
-            pixel_values = batch['pixel_values'].to(device)
 
             with torch.amp.autocast("cuda"):
-                outputs = model(input_ids=input_ids, attention_mask=attention_mask, pixel_values=pixel_values)
-                image_features = outputs.image_embeds
-                text_features = outputs.text_embeds
-                features = torch.cat([image_features, text_features], dim=1)
-                predicted_price_log = model.regressor(features).squeeze(-1)
+                outputs = model(input_ids=input_ids, attention_mask=attention_mask)
+                cls_embedding = outputs.last_hidden_state[:, 0, :]
+                predicted_price_log = model.regressor(cls_embedding).squeeze(-1)
             
             all_predictions.extend(predicted_price_log.detach().cpu().float().numpy())
 
@@ -342,25 +314,22 @@ def run_inference(model, processor, params, device):
 
 if __name__ == "__main__":
     params = {
-        'RUN_NAME': 'Loss Changed',
+        'RUN_NAME': 'NeoBERT Text Only',
         'DATASET_FOLDER': 'dataset/',
-        'IMAGE_FOLDER': 'train_images/',
-        'TEST_IMAGE_FOLDER': 'test_images/',
-        'MODEL_NAME': 'openai/clip-vit-base-patch32',
-        'BATCH_SIZE': 1024,
+        'MODEL_NAME': 'chandar-lab/NeoBERT',
+        'BATCH_SIZE': 64, 
         'LEARNING_RATE': 3e-4,
         'NUM_EPOCHS': 5,
         'DATA_PERCENTAGE': 1.0,
         'USE_LORA': False,
-        'FREEZE_EMBEDDING_MODEL': False,
         'MIXED_PRECISION': True,
         'lora_r': 16,
         'lora_alpha': 16,
         'lora_dropout': 0.1,
         'regressor_width': 256,
-        'regressor_depth': 3,
+        'regressor_depth': 1,
         'WEIGHT_DECAY': 0.01,
         'DROPOUT_RATE': 0.25,
     }
-    mlflow.set_experiment("CLIP Price Prediction")
+    mlflow.set_experiment("NeoBERT Price Prediction")
     main(params)

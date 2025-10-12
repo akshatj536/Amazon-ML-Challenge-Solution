@@ -1,0 +1,787 @@
+[ERROR] Failed to save config with lock: Error: ENOENT: no such file or directory, lstat '/teamspace/studios/this_studio/.claude.json'
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760244765869
+[DEBUG] Setting permissions for new file: 600
+[DEBUG] Temp file written successfully, size: 103 bytes
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760244765869 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760244765940
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 183 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760244765940 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760244765955
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 220 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760244765955 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Found 0 plugins (0 enabled, 0 disabled)
+[DEBUG] Creating shell snapshot for zsh (zsh)
+[DEBUG] Looking for shell config file: /teamspace/studios/this_studio/.zshrc
+[DEBUG] Snapshots directory: /teamspace/studios/this_studio/.claude/shell-snapshots
+[DEBUG] Creating snapshot at: /teamspace/studios/this_studio/.claude/shell-snapshots/snapshot-zsh-1760244766139-iwc8ag.sh
+[DEBUG] Shell binary exists: false
+[DEBUG] Execution timeout: 10000ms
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude/todos/d13edce7-aee3-438a-947d-4f1052ffb56e-agent-d13edce7-aee3-438a-947d-4f1052ffb56e.json.tmp.1855927.1760244766150
+[DEBUG] Temp file written successfully, size: 2 bytes
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude/todos/d13edce7-aee3-438a-947d-4f1052ffb56e-agent-d13edce7-aee3-438a-947d-4f1052ffb56e.json.tmp.1855927.1760244766150 to /teamspace/studios/this_studio/.claude/todos/d13edce7-aee3-438a-947d-4f1052ffb56e-agent-d13edce7-aee3-438a-947d-4f1052ffb56e.json
+[DEBUG] File /teamspace/studios/this_studio/.claude/todos/d13edce7-aee3-438a-947d-4f1052ffb56e-agent-d13edce7-aee3-438a-947d-4f1052ffb56e.json written atomically
+[DEBUG] Registered 0 hooks from 0 plugins
+[DEBUG] Loading skills from directories: managed=/etc/claude-code/.claude/skills, user=/teamspace/studios/this_studio/.claude/skills, project=/teamspace/studios/this_studio/.claude/skills
+[DEBUG] Total plugin agents loaded: 0
+[DEBUG] Loaded 0 skills total (managed: 0, user: 0, project: 0)
+[DEBUG] Total plugin commands loaded: 0
+[DEBUG] Total plugin skills loaded: 0
+[DEBUG] Ripgrep first use test: PASSED (mode=builtin, path=/system/conda/node/nvm/versions/node/v22.14.0/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg)
+[ERROR] Error: Error: Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization" headers to be explicitly omitted
+    at file:///system/conda/node/nvm/versions/node/v22.14.0/lib/node_modules/@anthropic-ai/claude-code/cli.js:432:3020
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760244766393
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 29888 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760244766393 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760244766538
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 29970 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760244766538 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760244766548
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 30000 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760244766548 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Shell snapshot created successfully (179701 bytes)
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760244773843
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 30024 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760244773843 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760244773852
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 30024 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760244773852 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] BigQuery metrics exporter flush complete
+[DEBUG] Telemetry flushed successfully
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245008392
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 30024 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245008392 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245008398
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 30024 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245008398 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245008525
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 30309 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245008525 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245008643
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 30412 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245008643 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245008654
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 30450 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245008654 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245008776
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 30473 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245008776 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Getting matching hook commands for Notification with query: undefined
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245018346
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 30514 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245018346 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245018355
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 30585 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245018355 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245020206
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 30616 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245020206 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245020216
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 30636 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245020216 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Executing hooks for SessionStart:startup
+[DEBUG] Getting matching hook commands for SessionStart with query: startup
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "startup" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245020273
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 30636 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245020273 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245020277
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 30672 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245020277 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245020281
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 31148 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245020281 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] AutoUpdaterWrapper: Installation type: npm-global, using native: false
+[DEBUG] performStartupChecks called, ENABLE_PLUGINS=true
+[DEBUG] Trust not accepted for current directory - skipping plugin installations
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245020302
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 31186 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245020302 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245020314
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 31291 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245020314 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Loaded plugins - Enabled: 0, Disabled: 0, Commands: 0, Agents: 0, Errors: 0
+[DEBUG] Slash commands included in SlashCommand tool:
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245020365
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 31291 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245020365 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] AutoUpdaterWrapper: Installation type: npm-global, using native: false
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245024914
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 31348 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245024914 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] AutoUpdaterWrapper: Installation type: npm-global, using native: false
+[DEBUG] AutoUpdaterWrapper: Installation type: npm-global, using native: false
+[DEBUG] AutoUpdaterWrapper: Installation type: npm-global, using native: false
+[DEBUG] AutoUpdaterWrapper: Installation type: npm-global, using native: false
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245037351
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 31397 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245037351 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245037400
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 31435 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245037400 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude/settings.json.tmp.1855927.1760245040882
+[DEBUG] Temp file written successfully, size: 36 bytes
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude/settings.json.tmp.1855927.1760245040882 to /teamspace/studios/this_studio/.claude/settings.json
+[DEBUG] File /teamspace/studios/this_studio/.claude/settings.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude/settings.json.tmp.1855927.1760245042239
+[DEBUG] Preserving file permissions: 100644
+[DEBUG] Temp file written successfully, size: 37 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude/settings.json.tmp.1855927.1760245042239 to /teamspace/studios/this_studio/.claude/settings.json
+[DEBUG] File /teamspace/studios/this_studio/.claude/settings.json written atomically
+[DEBUG] Applying permission update: Setting mode to 'acceptEdits'
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245043331
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 31471 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245043331 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Applying permission update: Setting mode to 'plan'
+[DEBUG] Applying permission update: Setting mode to 'default'
+[DEBUG] Applying permission update: Setting mode to 'acceptEdits'
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245044239
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 31471 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245044239 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Applying permission update: Setting mode to 'plan'
+[DEBUG] Applying permission update: Setting mode to 'default'
+[DEBUG] Applying permission update: Setting mode to 'acceptEdits'
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245045776
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 31471 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245045776 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Applying permission update: Setting mode to 'plan'
+[DEBUG] Applying permission update: Setting mode to 'default'
+[DEBUG] Metrics opt-out API response: enabled=true
+[DEBUG] BigQuery metrics exported successfully
+[DEBUG] API Response: {
+  "accepted_count": 3,
+  "rejected_count": 0
+}
+[DEBUG] AutoUpdaterWrapper: Installation type: npm-global, using native: false
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude/settings.json.tmp.1855927.1760245331943
+[DEBUG] Preserving file permissions: 100644
+[DEBUG] Temp file written successfully, size: 36 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude/settings.json.tmp.1855927.1760245331943 to /teamspace/studios/this_studio/.claude/settings.json
+[DEBUG] File /teamspace/studios/this_studio/.claude/settings.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude/settings.json.tmp.1855927.1760245333238
+[DEBUG] Preserving file permissions: 100644
+[DEBUG] Temp file written successfully, size: 37 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude/settings.json.tmp.1855927.1760245333238 to /teamspace/studios/this_studio/.claude/settings.json
+[DEBUG] File /teamspace/studios/this_studio/.claude/settings.json written atomically
+[DEBUG] Applying permission update: Setting mode to 'acceptEdits'
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245338828
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 31729 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245338828 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Applying permission update: Setting mode to 'plan'
+[DEBUG] Hooks: getAsyncHookResponseAttachments called
+[DEBUG] Hooks: checkForNewResponses called
+[DEBUG] Hooks: Found 0 total hooks in registry
+[DEBUG] Hooks: checkForNewResponses returning 0 responses
+[DEBUG] Executing hooks for UserPromptSubmit
+[DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] FileHistory: Added snapshot for 2dbfb0dc-89a1-4c88-828c-c12967a5ab7a, tracking 0 files
+[DEBUG] Slash commands included in SlashCommand tool:
+[DEBUG] Stream started - received first chunk
+[DEBUG] executePreToolHooks called for tool: ExitPlanMode
+[DEBUG] Executing hooks for PreToolUse:ExitPlanMode
+[DEBUG] Getting matching hook commands for PreToolUse with query: ExitPlanMode
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "ExitPlanMode" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] Getting matching hook commands for Notification with query: undefined
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+[DEBUG] Applying permission update: Setting mode to 'acceptEdits'
+[DEBUG] AutoUpdaterWrapper: Installation type: npm-global, using native: false
+[DEBUG] Executing hooks for PostToolUse:ExitPlanMode
+[DEBUG] Getting matching hook commands for PostToolUse with query: ExitPlanMode
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "ExitPlanMode" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] Hooks: getAsyncHookResponseAttachments called
+[DEBUG] Hooks: checkForNewResponses called
+[DEBUG] Hooks: Found 0 total hooks in registry
+[DEBUG] Hooks: checkForNewResponses returning 0 responses
+[DEBUG] Slash commands included in SlashCommand tool:
+[DEBUG] Stream started - received first chunk
+[DEBUG] BigQuery metrics exported successfully
+[DEBUG] API Response: {
+  "accepted_count": 12,
+  "rejected_count": 0
+}
+[DEBUG] executePreToolHooks called for tool: Edit
+[DEBUG] Executing hooks for PreToolUse:Edit
+[DEBUG] Getting matching hook commands for PreToolUse with query: Edit
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] FileHistory: Tracked file modification for /teamspace/studios/this_studio/src/train_text_only_model.py
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/src/train_text_only_model.py.tmp.1855927.1760245369193
+[DEBUG] Preserving file permissions: 100644
+[DEBUG] Temp file written successfully, size: 13003 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/src/train_text_only_model.py.tmp.1855927.1760245369193 to /teamspace/studios/this_studio/src/train_text_only_model.py
+[DEBUG] File /teamspace/studios/this_studio/src/train_text_only_model.py written atomically
+[DEBUG] Executing hooks for PostToolUse:Edit
+[DEBUG] Getting matching hook commands for PostToolUse with query: Edit
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] executePreToolHooks called for tool: Edit
+[DEBUG] Executing hooks for PreToolUse:Edit
+[DEBUG] Getting matching hook commands for PreToolUse with query: Edit
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/src/train_text_only_model.py.tmp.1855927.1760245369284
+[DEBUG] Preserving file permissions: 100644
+[DEBUG] Temp file written successfully, size: 13004 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/src/train_text_only_model.py.tmp.1855927.1760245369284 to /teamspace/studios/this_studio/src/train_text_only_model.py
+[DEBUG] File /teamspace/studios/this_studio/src/train_text_only_model.py written atomically
+[DEBUG] Executing hooks for PostToolUse:Edit
+[DEBUG] Getting matching hook commands for PostToolUse with query: Edit
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] Hooks: getAsyncHookResponseAttachments called
+[DEBUG] Hooks: checkForNewResponses called
+[DEBUG] Hooks: Found 0 total hooks in registry
+[DEBUG] Hooks: checkForNewResponses returning 0 responses
+[DEBUG] Slash commands included in SlashCommand tool:
+[DEBUG] Stream started - received first chunk
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245373403
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 31754 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245373403 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Executing hooks for Stop
+[DEBUG] Getting matching hook commands for Stop with query: undefined
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245373427
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 31776 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245373427 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245373433
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 31997 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245373433 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] BigQuery metrics exported successfully
+[DEBUG] API Response: {
+  "accepted_count": 9,
+  "rejected_count": 0
+}
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245863323
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 31997 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245863323 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Applying permission update: Setting mode to 'plan'
+[DEBUG] AutoUpdaterWrapper: Installation type: npm-global, using native: false
+[DEBUG] AutoUpdaterWrapper: Installation type: npm-global, using native: false
+[DEBUG] Hooks: getAsyncHookResponseAttachments called
+[DEBUG] Hooks: checkForNewResponses called
+[DEBUG] Hooks: Found 0 total hooks in registry
+[DEBUG] Hooks: checkForNewResponses returning 0 responses
+[DEBUG] Executing hooks for UserPromptSubmit
+[DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] FileHistory: Making snapshot for message 2278792f-5ed2-418f-ad5e-443009bce304
+[DEBUG] FileHistory: Added snapshot for 2278792f-5ed2-418f-ad5e-443009bce304, tracking 1 files
+[DEBUG] Slash commands included in SlashCommand tool:
+[DEBUG] Stream started - received first chunk
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245920565
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 32022 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245920565 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Executing hooks for Stop
+[DEBUG] Getting matching hook commands for Stop with query: undefined
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245920584
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 32046 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245920584 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245920588
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 32270 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760245920588 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] BigQuery metrics exported successfully
+[DEBUG] API Response: {
+  "accepted_count": 12,
+  "rejected_count": 0
+}
+[DEBUG] AutoUpdaterWrapper: Installation type: npm-global, using native: false
+[DEBUG] Hooks: getAsyncHookResponseAttachments called
+[DEBUG] Hooks: checkForNewResponses called
+[DEBUG] Hooks: Found 0 total hooks in registry
+[DEBUG] Hooks: checkForNewResponses returning 0 responses
+[DEBUG] Executing hooks for UserPromptSubmit
+[DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] FileHistory: Making snapshot for message 95cb2d29-9163-467f-9e8d-0e3b264d0fa0
+[DEBUG] FileHistory: Added snapshot for 95cb2d29-9163-467f-9e8d-0e3b264d0fa0, tracking 1 files
+[DEBUG] Slash commands included in SlashCommand tool:
+[DEBUG] Stream started - received first chunk
+[DEBUG] executePreToolHooks called for tool: ExitPlanMode
+[DEBUG] Executing hooks for PreToolUse:ExitPlanMode
+[DEBUG] Getting matching hook commands for PreToolUse with query: ExitPlanMode
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "ExitPlanMode" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] Getting matching hook commands for Notification with query: undefined
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+[DEBUG] AutoUpdaterWrapper: Installation type: npm-global, using native: false
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760246153676
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 32292 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760246153676 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760246153682
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 32488 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760246153682 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] BigQuery metrics exported successfully
+[DEBUG] API Response: {
+  "accepted_count": 12,
+  "rejected_count": 0
+}
+[DEBUG] Applying permission update: Setting mode to 'default'
+[DEBUG] Applying permission update: Setting mode to 'acceptEdits'
+[DEBUG] Hooks: getAsyncHookResponseAttachments called
+[DEBUG] Hooks: checkForNewResponses called
+[DEBUG] Hooks: Found 0 total hooks in registry
+[DEBUG] Hooks: checkForNewResponses returning 0 responses
+[DEBUG] Executing hooks for UserPromptSubmit
+[DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] FileHistory: Making snapshot for message 91348b26-057d-40c9-98b8-0e5f48791ebe
+[DEBUG] FileHistory: Added snapshot for 91348b26-057d-40c9-98b8-0e5f48791ebe, tracking 1 files
+[DEBUG] Slash commands included in SlashCommand tool:
+[DEBUG] BigQuery metrics exported successfully
+[DEBUG] API Response: {
+  "accepted_count": 7,
+  "rejected_count": 0
+}
+[DEBUG] Stream started - received first chunk
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760246577509
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 33198 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760246577509 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Executing hooks for Stop
+[DEBUG] Getting matching hook commands for Stop with query: undefined
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760246577540
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 33218 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760246577540 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760246577545
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 33349 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760246577545 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760246623078
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 33349 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760246623078 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Applying permission update: Setting mode to 'plan'
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760246629066
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 33416 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760246629066 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Hooks: getAsyncHookResponseAttachments called
+[DEBUG] Hooks: checkForNewResponses called
+[DEBUG] Hooks: Found 0 total hooks in registry
+[DEBUG] Hooks: checkForNewResponses returning 0 responses
+[DEBUG] Executing hooks for UserPromptSubmit
+[DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] FileHistory: Making snapshot for message ae304fcf-9cd0-4e94-85f7-0ed626ed87c3
+[DEBUG] FileHistory: Added snapshot for ae304fcf-9cd0-4e94-85f7-0ed626ed87c3, tracking 1 files
+[DEBUG] Slash commands included in SlashCommand tool:
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760246631243
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 33416 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760246631243 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Stream started - received first chunk
+[DEBUG] executePreToolHooks called for tool: ExitPlanMode
+[DEBUG] Executing hooks for PreToolUse:ExitPlanMode
+[DEBUG] Getting matching hook commands for PreToolUse with query: ExitPlanMode
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "ExitPlanMode" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] Applying permission update: Setting mode to 'acceptEdits'
+[DEBUG] AutoUpdaterWrapper: Installation type: npm-global, using native: false
+[DEBUG] Executing hooks for PostToolUse:ExitPlanMode
+[DEBUG] Getting matching hook commands for PostToolUse with query: ExitPlanMode
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "ExitPlanMode" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] Hooks: getAsyncHookResponseAttachments called
+[DEBUG] Hooks: checkForNewResponses called
+[DEBUG] Hooks: Found 0 total hooks in registry
+[DEBUG] Hooks: checkForNewResponses returning 0 responses
+[DEBUG] Slash commands included in SlashCommand tool:
+[DEBUG] Stream started - received first chunk
+[DEBUG] executePreToolHooks called for tool: Edit
+[DEBUG] Executing hooks for PreToolUse:Edit
+[DEBUG] Getting matching hook commands for PreToolUse with query: Edit
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/src/train_text_only_model.py.tmp.1855927.1760246677261
+[DEBUG] Preserving file permissions: 100644
+[DEBUG] Temp file written successfully, size: 13182 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/src/train_text_only_model.py.tmp.1855927.1760246677261 to /teamspace/studios/this_studio/src/train_text_only_model.py
+[DEBUG] File /teamspace/studios/this_studio/src/train_text_only_model.py written atomically
+[DEBUG] Executing hooks for PostToolUse:Edit
+[DEBUG] Getting matching hook commands for PostToolUse with query: Edit
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] executePreToolHooks called for tool: Edit
+[DEBUG] Executing hooks for PreToolUse:Edit
+[DEBUG] Getting matching hook commands for PreToolUse with query: Edit
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/src/train_text_only_model.py.tmp.1855927.1760246677904
+[DEBUG] Preserving file permissions: 100644
+[DEBUG] Temp file written successfully, size: 13469 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/src/train_text_only_model.py.tmp.1855927.1760246677904 to /teamspace/studios/this_studio/src/train_text_only_model.py
+[DEBUG] File /teamspace/studios/this_studio/src/train_text_only_model.py written atomically
+[DEBUG] Executing hooks for PostToolUse:Edit
+[DEBUG] Getting matching hook commands for PostToolUse with query: Edit
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] executePreToolHooks called for tool: Edit
+[DEBUG] Executing hooks for PreToolUse:Edit
+[DEBUG] Getting matching hook commands for PreToolUse with query: Edit
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/src/train_text_only_model.py.tmp.1855927.1760246678299
+[DEBUG] Preserving file permissions: 100644
+[DEBUG] Temp file written successfully, size: 13663 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/src/train_text_only_model.py.tmp.1855927.1760246678299 to /teamspace/studios/this_studio/src/train_text_only_model.py
+[DEBUG] File /teamspace/studios/this_studio/src/train_text_only_model.py written atomically
+[DEBUG] Executing hooks for PostToolUse:Edit
+[DEBUG] Getting matching hook commands for PostToolUse with query: Edit
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] executePreToolHooks called for tool: Edit
+[DEBUG] Executing hooks for PreToolUse:Edit
+[DEBUG] Getting matching hook commands for PreToolUse with query: Edit
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/src/train_text_only_model.py.tmp.1855927.1760246678968
+[DEBUG] Preserving file permissions: 100644
+[DEBUG] Temp file written successfully, size: 13807 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/src/train_text_only_model.py.tmp.1855927.1760246678968 to /teamspace/studios/this_studio/src/train_text_only_model.py
+[DEBUG] File /teamspace/studios/this_studio/src/train_text_only_model.py written atomically
+[DEBUG] Executing hooks for PostToolUse:Edit
+[DEBUG] Getting matching hook commands for PostToolUse with query: Edit
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] executePreToolHooks called for tool: Edit
+[DEBUG] Executing hooks for PreToolUse:Edit
+[DEBUG] Getting matching hook commands for PreToolUse with query: Edit
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/src/train_text_only_model.py.tmp.1855927.1760246679646
+[DEBUG] Preserving file permissions: 100644
+[DEBUG] Temp file written successfully, size: 13806 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/src/train_text_only_model.py.tmp.1855927.1760246679646 to /teamspace/studios/this_studio/src/train_text_only_model.py
+[DEBUG] File /teamspace/studios/this_studio/src/train_text_only_model.py written atomically
+[DEBUG] Executing hooks for PostToolUse:Edit
+[DEBUG] Getting matching hook commands for PostToolUse with query: Edit
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] executePreToolHooks called for tool: Edit
+[DEBUG] Executing hooks for PreToolUse:Edit
+[DEBUG] Getting matching hook commands for PreToolUse with query: Edit
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/src/train_text_only_model.py.tmp.1855927.1760246680602
+[DEBUG] Preserving file permissions: 100644
+[DEBUG] Temp file written successfully, size: 13847 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/src/train_text_only_model.py.tmp.1855927.1760246680602 to /teamspace/studios/this_studio/src/train_text_only_model.py
+[DEBUG] File /teamspace/studios/this_studio/src/train_text_only_model.py written atomically
+[DEBUG] Executing hooks for PostToolUse:Edit
+[DEBUG] Getting matching hook commands for PostToolUse with query: Edit
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] Hooks: getAsyncHookResponseAttachments called
+[DEBUG] Hooks: checkForNewResponses called
+[DEBUG] Hooks: Found 0 total hooks in registry
+[DEBUG] Hooks: checkForNewResponses returning 0 responses
+[DEBUG] Slash commands included in SlashCommand tool:
+[DEBUG] Stream started - received first chunk
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760246691844
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 33612 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760246691844 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Executing hooks for Stop
+[DEBUG] Getting matching hook commands for Stop with query: undefined
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760246691869
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 33631 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760246691869 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760246691874
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 33802 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760246691874 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] BigQuery metrics exported successfully
+[DEBUG] API Response: {
+  "accepted_count": 15,
+  "rejected_count": 0
+}
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760247024459
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 34021 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760247024459 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Applying permission update: Setting mode to 'plan'
+[DEBUG] Hooks: getAsyncHookResponseAttachments called
+[DEBUG] Hooks: checkForNewResponses called
+[DEBUG] Hooks: Found 0 total hooks in registry
+[DEBUG] Hooks: checkForNewResponses returning 0 responses
+[DEBUG] Executing hooks for UserPromptSubmit
+[DEBUG] Getting matching hook commands for UserPromptSubmit with query: undefined
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] FileHistory: Making snapshot for message 00910eb4-5273-4650-a45f-985b5b0ff141
+[DEBUG] FileHistory: Added snapshot for 00910eb4-5273-4650-a45f-985b5b0ff141, tracking 1 files
+[DEBUG] Slash commands included in SlashCommand tool:
+[DEBUG] Stream started - received first chunk
+[DEBUG] executePreToolHooks called for tool: ExitPlanMode
+[DEBUG] Executing hooks for PreToolUse:ExitPlanMode
+[DEBUG] Getting matching hook commands for PreToolUse with query: ExitPlanMode
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "ExitPlanMode" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] Applying permission update: Setting mode to 'acceptEdits'
+[DEBUG] AutoUpdaterWrapper: Installation type: npm-global, using native: false
+[DEBUG] Executing hooks for PostToolUse:ExitPlanMode
+[DEBUG] Getting matching hook commands for PostToolUse with query: ExitPlanMode
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "ExitPlanMode" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] Hooks: getAsyncHookResponseAttachments called
+[DEBUG] Hooks: checkForNewResponses called
+[DEBUG] Hooks: Found 0 total hooks in registry
+[DEBUG] Hooks: checkForNewResponses returning 0 responses
+[DEBUG] Slash commands included in SlashCommand tool:
+[DEBUG] Stream started - received first chunk
+[DEBUG] executePreToolHooks called for tool: Edit
+[DEBUG] Executing hooks for PreToolUse:Edit
+[DEBUG] Getting matching hook commands for PreToolUse with query: Edit
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/src/train_text_only_model.py.tmp.1855927.1760247048639
+[DEBUG] Preserving file permissions: 100644
+[DEBUG] Temp file written successfully, size: 13869 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/src/train_text_only_model.py.tmp.1855927.1760247048639 to /teamspace/studios/this_studio/src/train_text_only_model.py
+[DEBUG] File /teamspace/studios/this_studio/src/train_text_only_model.py written atomically
+[DEBUG] Executing hooks for PostToolUse:Edit
+[DEBUG] Getting matching hook commands for PostToolUse with query: Edit
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "Edit" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] Hooks: getAsyncHookResponseAttachments called
+[DEBUG] Hooks: checkForNewResponses called
+[DEBUG] Hooks: Found 0 total hooks in registry
+[DEBUG] Hooks: checkForNewResponses returning 0 responses
+[DEBUG] Slash commands included in SlashCommand tool:
+[DEBUG] Stream started - received first chunk
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760247054628
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 34051 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760247054628 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Executing hooks for Stop
+[DEBUG] Getting matching hook commands for Stop with query: undefined
+[DEBUG] Found 0 hook matchers in settings
+[DEBUG] Matched 0 unique hooks for query "no match query" (0 before deduplication)
+[DEBUG] Found 0 hook commands to execute
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760247054668
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 34080 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760247054668 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] Writing to temp file: /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760247054676
+[DEBUG] Preserving file permissions: 100600
+[DEBUG] Temp file written successfully, size: 35328 bytes
+[DEBUG] Applied original permissions to temp file
+[DEBUG] Renaming /teamspace/studios/this_studio/.claude.json.tmp.1855927.1760247054676 to /teamspace/studios/this_studio/.claude.json
+[DEBUG] File /teamspace/studios/this_studio/.claude.json written atomically
+[DEBUG] BigQuery metrics exported successfully
+[DEBUG] API Response: {
+  "accepted_count": 15,
+  "rejected_count": 0
+}
