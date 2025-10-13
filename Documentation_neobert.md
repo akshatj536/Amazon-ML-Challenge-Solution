@@ -62,7 +62,7 @@ not used as the in our eda we found out that the image quality was very bad. enh
 
 ## 5. Conclusion
 *Summarize your approach, key achievements, and lessons learned in 2-3 sentences.*
-the first approach was using openai clip model to generate emmbedding for text and image and fusing them using ann regressor head which gave us initial smape 55. then we tried using qwen embeddings and use xgboost and ann regressor for regression head but didnt give good results.then finally i trained a neobert model to generate text embeddings and used a regressor head performing full finetuning and gave us smape score of 43. h100 is so powerful that it was bottling so we spent a chunk of time optimising that and finally landed on mixed precision.
+the first approach was using openai clip model to generate emmbedding for text and image and fusing them using ann regressor head which gave us initial smape 55. then we tried using qwen embeddings and use xgboost and ann regressor for regression head but didnt give good results.and also tried diberta but the results were not good either after enough experimentation and research finally i trained a neobert model to generate text embeddings and used a regressor head performing full finetuning and gave us smape score of 43. h100 is so powerful that it was bottling so we spent a chunk of time optimising that and finally landed on mixed precision.
 ---
 
 ## Appendix
