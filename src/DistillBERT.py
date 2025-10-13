@@ -11,6 +11,7 @@ from sklearn.model_selection import train_test_split
 import mlflow
 import matplotlib.pyplot as plt
 import numpy as np
+import re
 
 # --- Model Definition ---
 class Regressor(torch.nn.Module):
@@ -38,8 +39,6 @@ class SMAPELoss(torch.nn.Module):
         self.epsilon = epsilon
 
     def forward(self, y_pred, y_true):
-        # SMAPE is calculated on the real price, not log-price.
-        # Inverse the log-transform before calculating the loss.
         y_true_real = torch.expm1(y_true)
         y_pred_real = torch.expm1(y_pred)
 
@@ -67,7 +66,7 @@ class PriceDataset(Dataset):
         price = torch.tensor(row['price'], dtype=torch.float)
 
         # Process text only
-        inputs = self.tokenizer(text, return_tensors="pt", padding='max_length', truncation=True, max_length=2048)
+        inputs = self.tokenizer(text, return_tensors="pt", padding='max_length', truncation=True, max_length=512)
 
         return {
             'input_ids': inputs['input_ids'].squeeze(),
@@ -81,7 +80,8 @@ def main(params):
         mlflow.log_params(params)
 
         print("Loading and preprocessing data...")
-        train_df = pd.read_csv(os.path.join(params['DATASET_FOLDER'], 'train_filtered.csv'))
+        train_df = pd.read_csv(os.path.join(params['DATASET_FOLDER'], 'train_filtered_cleaned.csv'))
+        train_df['catalog_content'] = train_df['catalog_content'].astype(str)
         train_df['price'] = np.log1p(train_df['price'])
 
         if params['DATA_PERCENTAGE'] < 1.0:
@@ -96,19 +96,6 @@ def main(params):
 
         regressor = Regressor(model.config.hidden_size, params['regressor_width'], params['regressor_depth'], params['DROPOUT_RATE'])
         model.add_module("regressor", regressor)
-
-        # --- Fine-tuning strategy logic ---
-        if params.get('USE_LORA'):
-            print("Configuring LoRA...")
-            lora_config = LoraConfig(
-                r=params['lora_r'],
-                lora_alpha=params['lora_alpha'],
-                target_modules=["query", "key", "value"],
-                lora_dropout=params['lora_dropout'],
-                bias="none",
-            )
-            model = get_peft_model(model, lora_config)
-            model.print_trainable_parameters()
 
         print("Creating datasets and dataloaders...")
         train_dataset = PriceDataset(train_df, tokenizer)
@@ -140,6 +127,8 @@ def main(params):
         scaler = torch.amp.GradScaler("cuda")
 
         epoch_metrics = []
+        best_val_loss = float('inf')
+        best_model_path = "best_model_distillbert.pt"
         # --- Training Loop ---
         for epoch in range(params['NUM_EPOCHS']):
             model.train()
@@ -160,6 +149,11 @@ def main(params):
                     mse_loss = mse_loss_fn(predicted_price, prices)
 
                 scaler.scale(loss).backward()
+
+                # Gradient clipping for stable training
+                scaler.unscale_(optimizer)
+                grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+
                 scaler.step(optimizer)
                 scaler.update()
 
@@ -170,8 +164,10 @@ def main(params):
             avg_train_mse = total_mse_loss / len(train_dataloader)
             print(f"Epoch {epoch + 1} - Average Training SMAPE Loss: {avg_train_loss:.4f}")
             print(f"Epoch {epoch + 1} - Average Training MSE Loss: {avg_train_mse:.4f}")
+            print(f"Epoch {epoch + 1} - Last Gradient Norm: {grad_norm:.4f}")
             mlflow.log_metric("avg_train_smape_loss", avg_train_loss, step=epoch)
             mlflow.log_metric("avg_train_mse_loss", avg_train_mse, step=epoch)
+            mlflow.log_metric("grad_norm", grad_norm, step=epoch)
 
             # --- Validation Loop ---
             model.eval()
@@ -199,6 +195,15 @@ def main(params):
             mlflow.log_metric("avg_val_loss", avg_val_loss, step=epoch)
             epoch_metrics.append({'epoch': epoch + 1, 'avg_train_loss': avg_train_loss, 'avg_val_loss': avg_val_loss})
 
+            if avg_val_loss < best_val_loss:
+                best_val_loss = avg_val_loss
+                print(f"New best model found with validation loss: {best_val_loss:.4f}. Saving model to {best_model_path}")
+                torch.save(model.state_dict(), best_model_path)
+                mlflow.log_metric("best_val_loss", best_val_loss, step=epoch)
+
+            if (epoch + 1) % 5 == 0:
+                run_inference(model, tokenizer, params, device)
+
         print("Saving metrics to CSV and logging to MLflow...")
         metrics_df = pd.DataFrame(epoch_metrics)
         timestamp = time.strftime("%Y%m%d-%H%M%S")
@@ -222,14 +227,15 @@ def main(params):
         print("Saving the fine-tuned model...")
         model_output_dir = "clip-lora-finetuned-local"
         model.save_pretrained(model_output_dir)
-        if params.get('USE_LORA'):
-            torch.save(model.regressor.state_dict(), os.path.join(model_output_dir, 'regressor.pt'))
 
         print("Logging model artifacts to MLflow...")
         mlflow.log_artifacts(
             model_output_dir,
             artifact_path="NeoBERT-finetuned"
         )
+
+        print(f"\nLoading best model from {best_model_path} for inference...")
+        model.load_state_dict(torch.load(best_model_path))
 
         # --- Run Inference on Test Set ---
         run_inference(model, tokenizer, params, device)
@@ -241,12 +247,13 @@ def run_inference(model, tokenizer, params, device):
     print("\nStarting inference on the test set...")
 
     # 1. Load test data
-    test_csv_path = os.path.join(params['DATASET_FOLDER'], 'test.csv')
+    test_csv_path = os.path.join(params['DATASET_FOLDER'], 'test_filtered_cleaned.csv')
     if not os.path.exists(test_csv_path):
         print(f"Warning: test.csv not found at {test_csv_path}. Skipping inference.")
         return
         
     test_df = pd.read_csv(test_csv_path)
+    test_df['catalog_content'] = test_df['catalog_content'].astype(str)
 
     # 2. Create a custom Test Dataset and DataLoader
     class TestDataset(Dataset):
@@ -263,7 +270,7 @@ def run_inference(model, tokenizer, params, device):
             item_id = row['sample_id']
             text = row['catalog_content']
 
-            inputs = self.tokenizer(text, return_tensors="pt", padding='max_length', truncation=True, max_length=2048)
+            inputs = self.tokenizer(text, return_tensors="pt", padding='max_length', truncation=True, max_length=512)
 
             return {
                 'sample_id': item_id,
@@ -280,7 +287,11 @@ def run_inference(model, tokenizer, params, device):
     all_predictions = []
     with torch.no_grad():
         for batch in tqdm(test_dataloader, desc="Inference"):
-            all_sample_ids.extend(batch['sample_id'])
+            sample_ids = batch['sample_id']
+            if isinstance(sample_ids, torch.Tensor):
+                all_sample_ids.extend(sample_ids.cpu().tolist())
+            else:
+                all_sample_ids.extend(sample_ids)
             
             input_ids = batch['input_ids'].to(device)
             attention_mask = batch['attention_mask'].to(device)
@@ -314,22 +325,17 @@ def run_inference(model, tokenizer, params, device):
 
 if __name__ == "__main__":
     params = {
-        'RUN_NAME': 'NeoBERT Text Only',
+        'RUN_NAME': 'RexBERT base Text Only',
         'DATASET_FOLDER': 'dataset/',
-        'MODEL_NAME': 'chandar-lab/NeoBERT',
-        'BATCH_SIZE': 64, 
-        'LEARNING_RATE': 3e-4,
-        'NUM_EPOCHS': 5,
-        'DATA_PERCENTAGE': 1.0,
-        'USE_LORA': False,
-        'MIXED_PRECISION': True,
-        'lora_r': 16,
-        'lora_alpha': 16,
-        'lora_dropout': 0.1,
+        'MODEL_NAME': 'thebajajra/RexBERT-large',
+        'BATCH_SIZE': 100,
+        'LEARNING_RATE': 2e-5,
+        'NUM_EPOCHS': 25,
+        'DATA_PERCENTAGE': 1,
         'regressor_width': 256,
         'regressor_depth': 1,
-        'WEIGHT_DECAY': 0.01,
-        'DROPOUT_RATE': 0.25,
+        'WEIGHT_DECAY': 0.03,
+        'DROPOUT_RATE': 0.3,
     }
-    mlflow.set_experiment("NeoBERT Price Prediction")
+    mlflow.set_experiment("RexBERT Price Prediction")
     main(params)

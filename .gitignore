@@ -8,6 +8,8 @@ dataset/
 metrics/
 mlruns/
 submission/
+best_model*/
+
 
 # Ignore common IDE and environment files
 .cache/

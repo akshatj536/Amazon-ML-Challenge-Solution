@@ -11,6 +11,7 @@ from sklearn.model_selection import train_test_split
 import mlflow
 import matplotlib.pyplot as plt
 import numpy as np
+import re
 
 # --- Model Definition ---
 class Regressor(torch.nn.Module):
@@ -38,8 +39,6 @@ class SMAPELoss(torch.nn.Module):
         self.epsilon = epsilon
 
     def forward(self, y_pred, y_true):
-        # SMAPE is calculated on the real price, not log-price.
-        # Inverse the log-transform before calculating the loss.
         y_true_real = torch.expm1(y_true)
         y_pred_real = torch.expm1(y_pred)
 
@@ -67,7 +66,7 @@ class PriceDataset(Dataset):
         price = torch.tensor(row['price'], dtype=torch.float)
 
         # Process text only
-        inputs = self.tokenizer(text, return_tensors="pt", padding='max_length', truncation=True, max_length=512)
+        inputs = self.tokenizer(text, return_tensors="pt", padding='max_length', truncation=True, max_length=625)
 
         return {
             'input_ids': inputs['input_ids'].squeeze(),
@@ -81,7 +80,8 @@ def main(params):
         mlflow.log_params(params)
 
         print("Loading and preprocessing data...")
-        train_df = pd.read_csv(os.path.join(params['DATASET_FOLDER'], 'train_filtered.csv'))
+        train_df = pd.read_csv(os.path.join(params['DATASET_FOLDER'], 'train_filtered_cleaned.csv'))
+        train_df['catalog_content'] = train_df['catalog_content'].astype(str)
         train_df['price'] = np.log1p(train_df['price'])
 
         if params['DATA_PERCENTAGE'] < 1.0:
@@ -96,27 +96,6 @@ def main(params):
 
         regressor = Regressor(model.config.hidden_size, params['regressor_width'], params['regressor_depth'], params['DROPOUT_RATE'])
         model.add_module("regressor", regressor)
-
-        # --- Fine-tuning strategy logic ---
-        if params.get('USE_LORA') and params.get('FREEZE_EMBEDDING_MODEL'):
-            raise ValueError("USE_LORA and FREEZE_EMBEDDING_MODEL cannot be True at the same time.")
-
-        if params.get('USE_LORA'):
-            print("Configuring LoRA...")
-            lora_config = LoraConfig(
-                r=params['lora_r'],
-                lora_alpha=params['lora_alpha'],
-                target_modules=["query", "key", "value"],
-                lora_dropout=params['lora_dropout'],
-                bias="none",
-            )
-            model = get_peft_model(model, lora_config)
-            model.print_trainable_parameters()
-        elif params.get('FREEZE_EMBEDDING_MODEL'):
-            print("Freezing NeoBERT model weights. Training only the regressor head.")
-            for name, param in model.named_parameters():
-                if 'regressor' not in name:
-                    param.requires_grad = False
 
         print("Creating datasets and dataloaders...")
         train_dataset = PriceDataset(train_df, tokenizer)
@@ -256,12 +235,13 @@ def run_inference(model, tokenizer, params, device):
     print("\nStarting inference on the test set...")
 
     # 1. Load test data
-    test_csv_path = os.path.join(params['DATASET_FOLDER'], 'test.csv')
+    test_csv_path = os.path.join(params['DATASET_FOLDER'], 'train_filtered_cleaned.csv')
     if not os.path.exists(test_csv_path):
         print(f"Warning: test.csv not found at {test_csv_path}. Skipping inference.")
         return
         
     test_df = pd.read_csv(test_csv_path)
+    test_df['catalog_content'] = test_df['catalog_content'].astype(str)
 
     # 2. Create a custom Test Dataset and DataLoader
     class TestDataset(Dataset):
@@ -338,7 +318,7 @@ if __name__ == "__main__":
         'MODEL_NAME': 'chandar-lab/NeoBERT',
         'BATCH_SIZE': 64,
         'LEARNING_RATE': 2e-5,
-        'NUM_EPOCHS': 40,
+        'NUM_EPOCHS': 20,
         'DATA_PERCENTAGE': 1.0,
         'USE_LORA': False,
         'FREEZE_EMBEDDING_MODEL': False,
@@ -348,8 +328,8 @@ if __name__ == "__main__":
         'lora_dropout': 0.1,
         'regressor_width': 256,
         'regressor_depth': 1,
-        'WEIGHT_DECAY': 0.01,
-        'DROPOUT_RATE': 0.3,
+        'WEIGHT_DECAY': 0.03,
+        'DROPOUT_RATE': 0.4,
     }
     mlflow.set_experiment("NeoBERT Price Prediction")
     main(params)
