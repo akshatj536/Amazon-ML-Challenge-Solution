@@ -338,7 +338,7 @@ if __name__ == "__main__":
         'MODEL_NAME': 'chandar-lab/NeoBERT',
         'BATCH_SIZE': 64,
         'LEARNING_RATE': 2e-5,
-        'NUM_EPOCHS': 5,
+        'NUM_EPOCHS': 40,
         'DATA_PERCENTAGE': 1.0,
         'USE_LORA': False,
         'FREEZE_EMBEDDING_MODEL': False,
@@ -349,7 +349,7 @@ if __name__ == "__main__":
         'regressor_width': 256,
         'regressor_depth': 1,
         'WEIGHT_DECAY': 0.01,
-        'DROPOUT_RATE': 0.25,
+        'DROPOUT_RATE': 0.3,
     }
     mlflow.set_experiment("NeoBERT Price Prediction")
     main(params)

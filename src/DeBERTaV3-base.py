@@ -3,7 +3,7 @@ import time
 import pandas as pd
 import torch
 from torch.utils.data import Dataset, DataLoader
-from transformers import AutoTokenizer, AutoModel, get_linear_schedule_with_warmup
+from transformers import AutoTokenizer, AutoModel
 from torch.optim import AdamW
 from peft import LoraConfig, get_peft_model
 from tqdm import tqdm
@@ -25,7 +25,6 @@ class Regressor(torch.nn.Module):
             layers.append(torch.nn.ReLU())
             layers.append(torch.nn.Dropout(dropout_rate))
         layers.append(torch.nn.Linear(width, 1))
-        layers.append(torch.nn.ReLU())
         self.regressor = torch.nn.Sequential(*layers)
 
     def forward(self, x):
@@ -39,6 +38,8 @@ class SMAPELoss(torch.nn.Module):
         self.epsilon = epsilon
 
     def forward(self, y_pred, y_true):
+        # SMAPE is calculated on the real price, not log-price.
+        # Inverse the log-transform before calculating the loss.
         y_true_real = torch.expm1(y_true)
         y_pred_real = torch.expm1(y_pred)
 
@@ -65,7 +66,8 @@ class PriceDataset(Dataset):
         text = row['catalog_content']
         price = torch.tensor(row['price'], dtype=torch.float)
 
-        inputs = self.tokenizer(text, return_tensors="pt", padding='max_length', truncation=True, max_length=1024)
+        # Process text only
+        inputs = self.tokenizer(text, return_tensors="pt", padding='max_length', truncation=True, max_length=512)
 
         return {
             'input_ids': inputs['input_ids'].squeeze(),
@@ -73,27 +75,29 @@ class PriceDataset(Dataset):
             'price': price
         }
 
-
+# --- Main Training Function ---
 def main(params):
     with mlflow.start_run(run_name=params['RUN_NAME']):
         mlflow.log_params(params)
 
         print("Loading and preprocessing data...")
-        df = pd.read_csv(os.path.join(params['DATASET_FOLDER'], 'train_filtered.csv'))
-        df['price'] = np.log1p(df['price'])
+        train_df = pd.read_csv(os.path.join(params['DATASET_FOLDER'], 'train_filtered.csv'))
+        train_df['price'] = np.log1p(train_df['price'])
 
         if params['DATA_PERCENTAGE'] < 1.0:
-            df = df.sample(frac=params['DATA_PERCENTAGE'], random_state=42)
+            train_df = train_df.sample(frac=params['DATA_PERCENTAGE'], random_state=42)
 
-        train_df, val_df = train_test_split(df, test_size=0.1, random_state=42)
+        train_df, val_df = train_test_split(train_df, test_size=0.1, random_state=42)
 
         print("Initializing model and tokenizer...")
         tokenizer = AutoTokenizer.from_pretrained(params['MODEL_NAME'], trust_remote_code=True)
         model = AutoModel.from_pretrained(params['MODEL_NAME'], trust_remote_code=True)
 
+
         regressor = Regressor(model.config.hidden_size, params['regressor_width'], params['regressor_depth'], params['DROPOUT_RATE'])
         model.add_module("regressor", regressor)
 
+        # --- Fine-tuning strategy logic ---
         if params.get('USE_LORA') and params.get('FREEZE_EMBEDDING_MODEL'):
             raise ValueError("USE_LORA and FREEZE_EMBEDDING_MODEL cannot be True at the same time.")
 
@@ -108,7 +112,6 @@ def main(params):
             )
             model = get_peft_model(model, lora_config)
             model.print_trainable_parameters()
-
         elif params.get('FREEZE_EMBEDDING_MODEL'):
             print("Freezing NeoBERT model weights. Training only the regressor head.")
             for name, param in model.named_parameters():
@@ -140,17 +143,12 @@ def main(params):
         optimizer = AdamW(model.parameters(), lr=params['LEARNING_RATE'], weight_decay=params['WEIGHT_DECAY'])
         loss_fn = SMAPELoss()
         mse_loss_fn = torch.nn.MSELoss()
-        
-        num_training_steps = len(train_dataloader) * params['NUM_EPOCHS']
-        scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=num_training_steps)
 
-        # Conditionally enable GradScaler for mixed precision
-        scaler = torch.amp.GradScaler(enabled=(device.type == 'cuda'))
+        # --- Mixed Precision Setup ---
+        scaler = torch.amp.GradScaler("cuda")
 
-        best_val_loss = float('inf')
-        patience_counter = 0
         epoch_metrics = []
-        
+        # --- Training Loop ---
         for epoch in range(params['NUM_EPOCHS']):
             model.train()
             total_loss = 0.0
@@ -162,30 +160,35 @@ def main(params):
                 attention_mask = batch['attention_mask'].to(device)
                 prices = batch['price'].to(device)
 
-                with torch.amp.autocast(device_type=device.type, enabled=(device.type == 'cuda')):
+                with torch.amp.autocast("cuda"):
                     outputs = model(input_ids=input_ids, attention_mask=attention_mask)
-                    last_hidden_state = outputs.last_hidden_state
-                    input_mask_expanded = attention_mask.unsqueeze(-1).expand(last_hidden_state.size()).float()
-                    sum_embeddings = torch.sum(last_hidden_state * input_mask_expanded, 1)
-                    sum_mask = torch.clamp(input_mask_expanded.sum(1), min=1e-9)
-                    mean_pooled_embedding = sum_embeddings / sum_mask
-                    predicted_price = model.regressor(mean_pooled_embedding).squeeze(-1)
+                    cls_embedding = outputs.last_hidden_state[:, 0, :]
+                    predicted_price = model.regressor(cls_embedding).squeeze(-1)
                     loss = loss_fn(predicted_price, prices)
                     mse_loss = mse_loss_fn(predicted_price, prices)
 
                 scaler.scale(loss).backward()
+
+                # Gradient clipping for stable training
                 scaler.unscale_(optimizer)
-                torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+                grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+
                 scaler.step(optimizer)
                 scaler.update()
-                scheduler.step()
 
                 total_loss += loss.item()
                 total_mse_loss += mse_loss.item()
 
             avg_train_loss = total_loss / len(train_dataloader)
             avg_train_mse = total_mse_loss / len(train_dataloader)
-            
+            print(f"Epoch {epoch + 1} - Average Training SMAPE Loss: {avg_train_loss:.4f}")
+            print(f"Epoch {epoch + 1} - Average Training MSE Loss: {avg_train_mse:.4f}")
+            print(f"Epoch {epoch + 1} - Last Gradient Norm: {grad_norm:.4f}")
+            mlflow.log_metric("avg_train_smape_loss", avg_train_loss, step=epoch)
+            mlflow.log_metric("avg_train_mse_loss", avg_train_mse, step=epoch)
+            mlflow.log_metric("grad_norm", grad_norm, step=epoch)
+
+            # --- Validation Loop ---
             model.eval()
             total_val_loss = 0.0
             all_prices = []
@@ -196,14 +199,10 @@ def main(params):
                     attention_mask = batch['attention_mask'].to(device)
                     prices = batch['price'].to(device)
 
-                    with torch.amp.autocast(device_type=device.type, enabled=(device.type == 'cuda')):
+                    with torch.amp.autocast("cuda"):
                         outputs = model(input_ids=input_ids, attention_mask=attention_mask)
-                        last_hidden_state = outputs.last_hidden_state
-                        input_mask_expanded = attention_mask.unsqueeze(-1).expand(last_hidden_state.size()).float()
-                        sum_embeddings = torch.sum(last_hidden_state * input_mask_expanded, 1)
-                        sum_mask = torch.clamp(input_mask_expanded.sum(1), min=1e-9)
-                        mean_pooled_embedding = sum_embeddings / sum_mask
-                        predicted_price = model.regressor(mean_pooled_embedding).squeeze(-1)
+                        cls_embedding = outputs.last_hidden_state[:, 0, :]
+                        predicted_price = model.regressor(cls_embedding).squeeze(-1)
                         val_loss = loss_fn(predicted_price, prices)
 
                     total_val_loss += val_loss.item()
@@ -211,24 +210,10 @@ def main(params):
                     all_predicted_prices.extend(predicted_price.detach().cpu().float().numpy())
 
             avg_val_loss = total_val_loss / len(val_dataloader)
-            print(f"Epoch {epoch + 1} - Train SMAPE Loss: {avg_train_loss:.4f}, Train MSE Loss: {avg_train_mse:.4f}, Val SMAPE Loss: {avg_val_loss:.4f}")
-            mlflow.log_metric("train_smape_loss", avg_train_loss, step=epoch)
-            mlflow.log_metric("train_mse_loss", avg_train_mse, step=epoch)
-            mlflow.log_metric("val_smape_loss", avg_val_loss, step=epoch)
+            print(f"Epoch {epoch + 1} - Validation Loss: {avg_val_loss:.4f}")
+            mlflow.log_metric("avg_val_loss", avg_val_loss, step=epoch)
             epoch_metrics.append({'epoch': epoch + 1, 'avg_train_loss': avg_train_loss, 'avg_val_loss': avg_val_loss})
 
-            if avg_val_loss < best_val_loss:
-                best_val_loss = avg_val_loss
-                patience_counter = 0
-                print("Validation loss improved. Saving model.")
-                model.save_pretrained("best_model")
-                torch.save(model.regressor.state_dict(), os.path.join("best_model", 'regressor.pt'))
-            else:
-                patience_counter += 1
-                if patience_counter >= params['EARLY_STOPPING_PATIENCE']:
-                    print(f"Early stopping at epoch {epoch + 1}")
-                    break
-        
         print("Saving metrics to CSV and logging to MLflow...")
         metrics_df = pd.DataFrame(epoch_metrics)
         timestamp = time.strftime("%Y%m%d-%H%M%S")
@@ -249,15 +234,19 @@ def main(params):
         plt.savefig("validation_plot.png")
         mlflow.log_artifact("validation_plot.png")
 
-        print("Loading best model for inference...")
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        tokenizer = AutoTokenizer.from_pretrained(params['MODEL_NAME'], trust_remote_code=True)
-        model = AutoModel.from_pretrained("best_model", trust_remote_code=True)
-        regressor = Regressor(model.config.hidden_size, params['regressor_width'], params['regressor_depth'], params['DROPOUT_RATE'])
-        regressor.load_state_dict(torch.load(os.path.join("best_model", 'regressor.pt')))
-        model.add_module("regressor", regressor)
-        model.to(device)
+        print("Saving the fine-tuned model...")
+        model_output_dir = "clip-lora-finetuned-local"
+        model.save_pretrained(model_output_dir)
+        if params.get('USE_LORA'):
+            torch.save(model.regressor.state_dict(), os.path.join(model_output_dir, 'regressor.pt'))
 
+        print("Logging model artifacts to MLflow...")
+        mlflow.log_artifacts(
+            model_output_dir,
+            artifact_path="NeoBERT-finetuned"
+        )
+
+        # --- Run Inference on Test Set ---
         run_inference(model, tokenizer, params, device)
 
 def run_inference(model, tokenizer, params, device):
@@ -285,10 +274,11 @@ def run_inference(model, tokenizer, params, device):
 
         def __getitem__(self, idx):
             row = self.dataframe.iloc[idx]
+            # Read the correct 'sample_id' column
             item_id = row['sample_id']
             text = row['catalog_content']
 
-            inputs = self.tokenizer(text, return_tensors="pt", padding='max_length', truncation=True, max_length=1024)
+            inputs = self.tokenizer(text, return_tensors="pt", padding='max_length', truncation=True, max_length=512)
 
             return {
                 'sample_id': item_id,
@@ -314,14 +304,10 @@ def run_inference(model, tokenizer, params, device):
             input_ids = batch['input_ids'].to(device)
             attention_mask = batch['attention_mask'].to(device)
 
-            with torch.amp.autocast(device_type=device.type, enabled=(device.type == 'cuda')):
+            with torch.amp.autocast("cuda"):
                 outputs = model(input_ids=input_ids, attention_mask=attention_mask)
-                last_hidden_state = outputs.last_hidden_state
-                input_mask_expanded = attention_mask.unsqueeze(-1).expand(last_hidden_state.size()).float()
-                sum_embeddings = torch.sum(last_hidden_state * input_mask_expanded, 1)
-                sum_mask = torch.clamp(input_mask_expanded.sum(1), min=1e-9)
-                mean_pooled_embedding = sum_embeddings / sum_mask
-                predicted_price_log = model.regressor(mean_pooled_embedding).squeeze(-1)
+                cls_embedding = outputs.last_hidden_state[:, 0, :]
+                predicted_price_log = model.regressor(cls_embedding).squeeze(-1)
             
             all_predictions.extend(predicted_price_log.detach().cpu().float().numpy())
 
@@ -347,13 +333,13 @@ def run_inference(model, tokenizer, params, device):
 
 if __name__ == "__main__":
     params = {
-        'RUN_NAME': 'DeBERT-v3-base-ft-1024-TextOnly-Improved',
+        'RUN_NAME': 'DeBERTv3-base Text Only',
         'DATASET_FOLDER': 'dataset/',
         'MODEL_NAME': 'microsoft/deberta-v3-base',
-        'BATCH_SIZE': 32,
+        'BATCH_SIZE': 64,
         'LEARNING_RATE': 2e-5,
-        'NUM_EPOCHS': 5,
-        'DATA_PERCENTAGE': 1,
+        'NUM_EPOCHS': 40,
+        'DATA_PERCENTAGE': 1.00,
         'USE_LORA': False,
         'FREEZE_EMBEDDING_MODEL': False,
         'MIXED_PRECISION': True,
@@ -363,8 +349,7 @@ if __name__ == "__main__":
         'regressor_width': 256,
         'regressor_depth': 1,
         'WEIGHT_DECAY': 0.01,
-        'DROPOUT_RATE': 0.25,
-        'EARLY_STOPPING_PATIENCE': 3,
+        'DROPOUT_RATE': 0.3,
     }
-    mlflow.set_experiment("DeBERT-v3-Base Price Prediction")
+    mlflow.set_experiment("DeBertav3-base Price Prediction")
     main(params)

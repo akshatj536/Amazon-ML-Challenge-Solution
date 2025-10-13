@@ -1,5 +1,4 @@
 # train_regressor_precomputed.py
-
 import os
 import time
 import pandas as pd
@@ -116,8 +115,8 @@ def objective(trial, X_train, y_train, X_val, y_val, device, params):
         # Create Datasets and Dataloaders
         train_dataset = EmbeddingDataset(X_train, y_train)
         val_dataset = EmbeddingDataset(X_val, y_val)
-        train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
-        val_dataloader = DataLoader(val_dataset, batch_size=batch_size, num_workers=0)
+        train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=20)
+        val_dataloader = DataLoader(val_dataset, batch_size=batch_size, num_workers=20)
 
         # Initialize Regressor and Optimizer
         regressor = Regressor(X_train.shape[1], regressor_width, regressor_depth, dropout_rate).to(device)
@@ -162,6 +161,7 @@ def objective(trial, X_train, y_train, X_val, y_val, device, params):
                     total_val_loss += val_loss.item()
             
             avg_val_loss = total_val_loss / len(val_dataloader)
+            print(f"Trial {trial.number} Epoch {epoch + 1} - Train SMAPE: {avg_train_loss:.4f}, Val SMAPE: {avg_val_loss:.4f}")
             mlflow.log_metric("train_smape_loss", avg_train_loss, step=epoch)
             mlflow.log_metric("val_smape_loss", avg_val_loss, step=epoch)
 
@@ -239,6 +239,9 @@ def main():
         train_dataset_full = EmbeddingDataset(X_train_full, y_train_full)
         train_dataloader_full = DataLoader(train_dataset_full, batch_size=best_params['batch_size'], shuffle=True)
 
+        val_dataset = EmbeddingDataset(X_val, y_val)
+        val_dataloader = DataLoader(val_dataset, batch_size=best_params['batch_size'], num_workers=0)
+
         final_regressor = Regressor(
             X_train.shape[1], 
             best_params['regressor_width'], 
@@ -271,8 +274,22 @@ def main():
                 scheduler.step()
                 total_loss += loss.item()
             avg_train_loss = total_loss / len(train_dataloader_full)
-            print(f"Final Training Epoch {epoch + 1} - Train SMAPE Loss: {avg_train_loss:.4f}")
+            
+            final_regressor.eval()
+            total_val_loss = 0.0
+            with torch.no_grad():
+                for batch in val_dataloader:
+                    embeddings = batch['embedding'].to(device)
+                    prices = batch['price'].to(device)
+                    with torch.amp.autocast(device_type=device.type, enabled=(device.type == 'cuda' and PARAMS['MIXED_PRECISION'])):
+                        predicted_price = final_regressor(embeddings).squeeze(-1)
+                        val_loss = loss_fn(predicted_price, prices)
+                    total_val_loss += val_loss.item()
+            
+            avg_val_loss = total_val_loss / len(val_dataloader)
+            print(f"Final Training Epoch {epoch + 1} - Train SMAPE Loss: {avg_train_loss:.4f}, Val SMAPE Loss: {avg_val_loss:.4f}")
             mlflow.log_metric("final_train_smape_loss", avg_train_loss, step=epoch)
+            mlflow.log_metric("final_val_smape_loss", avg_val_loss, step=epoch)
 
         print("Saving final model.")
         os.makedirs(PARAMS['MODEL_SAVE_PATH'], exist_ok=True)

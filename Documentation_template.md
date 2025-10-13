@@ -1,8 +1,8 @@
 # ML Challenge 2025: Smart Product Pricing Solution Template
 
-**Team Name:** [Your Team Name]  
-**Team Members:** [List all team members]  
-**Submission Date:** [Date]
+**Team Name:** Kasukabe-Defence-Group-Solution 
+**Team Members:** akshit, akshat, anirudha, somil 
+**Submission Date:** 13 october
 
 ---
 
@@ -23,30 +23,36 @@
 ### 2.2 Solution Strategy
 *Outline your high-level approach (e.g., multimodal learning, ensemble methods, etc.)*
 
-**Approach Type:** [Single Model / Ensemble / Hybrid, etc]  
-**Core Innovation:** [Brief description of your main technical contribution]
+**Approach Type:** Single Model (Text-Based)
+**Core Innovation:** Fine-tuning a pre-trained NeoBERT model (`chandar-lab/NeoBERT`) with a custom regression head for price prediction. The solution incorporates parameter-efficient fine-tuning (PEFT) using LoRA and robust training techniques like mixed-precision and gradient clipping.
 
 ---
 
 ## 3. Model Architecture
 
 ### 3.1 Architecture Overview
-*Describe your model architecture with a simple diagram or flowchart if possible.*
-
+The model architecture consists of two main components:
+1.  **NeoBERT Base:** A pre-trained `chandar-lab/NeoBERT` model processes the input product `catalog_content`.
+2.  **Regression Head:** The `[CLS]` token embedding from the final hidden layer of NeoBERT is extracted and fed into a custom Multi-Layer Perceptron (MLP). This MLP head acts as a regressor to predict the final (log-transformed) price.
 
 ### 3.2 Model Components
 
 **Text Processing Pipeline:**
-- [ ] Preprocessing steps: []
-- [ ] Model type: []
-- [ ] Key parameters: []
+- **Preprocessing steps:** 
+    - The target `price` variable is transformed using `log1p` for more stable training.
+    - Product `catalog_content` is tokenized using the NeoBERT tokenizer with a maximum length of 512 tokens.
+- **Model type:** `chandar-lab/NeoBERT` with a custom MLP regression head attached.
+- **Key parameters:**
+    - **Loss Function:** A custom SMAPE loss that correctly reverses the log-transformation on predictions and true values before calculation.
+    - **Optimizer:** AdamW.
+    - **Training:** Utilizes mixed-precision training (`torch.amp`) and gradient clipping (max norm 1.0) for faster and more stable training.
+- **Fine-tuning Strategy:** The script supports three distinct fine-tuning strategies:
+    1.  **Full Fine-tuning:** The entire model, including the base NeoBERT weights and the regression head, is trained end-to-end.
+    2.  **PEFT with LoRA:** Low-Rank Adaptation is applied to the "query", "key", and "value" modules of the attention layers. This significantly reduces the number of trainable parameters, making fine-tuning more efficient.
+    3.  **Feature Extraction (Frozen):** The base NeoBERT model's weights are frozen. Only the weights of the custom regression head are trained.
 
 **Image Processing Pipeline:**
-- [ ] Preprocessing steps: []
-- [ ] Model type: []
-- [ ] Key parameters: []
-
-
+not used
 ---
 
 
