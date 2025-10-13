@@ -28,3 +28,6 @@
 {"display":"add optuna in @src/neoBert.py, make no changes to the code structure only minimalistic code (dont forget to inlucde all that in ML flow)","pastedContents":{},"timestamp":1760283351855,"project":"/teamspace/studios/this_studio"}
 {"display":"optuna is used for hyperparameter optimization right?","pastedContents":{},"timestamp":1760283610511,"project":"/teamspace/studios/this_studio"}
 {"display":"if one epoch takes 1 hours, then how much time is this going to take?","pastedContents":{},"timestamp":1760283659843,"project":"/teamspace/studios/this_studio"}
+{"display":"resolve the import issue with minimalistic code changes in @src/train_regressor_precomputed.py ","pastedContents":{},"timestamp":1760329251529,"project":"/teamspace/studios/this_studio"}
+{"display":"Traceback (most recent call last):\n  File \"/teamspace/studios/this_studio/src/train_regressor_precomputed.py\", line 8, in <module>\n    from transformers.adapters import AutoAdapterModel as AutoModelWithHeads, AdapterConfig\nModuleNotFoundError: No module named 'transformers.adapters'","pastedContents":{},"timestamp":1760329283441,"project":"/teamspace/studios/this_studio"}
+{"display":"in @src/train_regressor_only.py add LoRA with minimalistic code changes","pastedContents":{},"timestamp":1760329723253,"project":"/teamspace/studios/this_studio"}

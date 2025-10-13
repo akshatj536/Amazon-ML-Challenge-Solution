@@ -1,5 +1,5 @@
 {
-  "numStartups": 9,
+  "numStartups": 10,
   "installMethod": "unknown",
   "autoUpdates": true,
   "theme": "dark-ansi",
@@ -51,6 +51,14 @@
     "/teamspace/studios/this_studio": {
       "allowedTools": [],
       "history": [
+        {
+          "display": "Traceback (most recent call last):\n  File \"/teamspace/studios/this_studio/src/train_regressor_precomputed.py\", line 8, in <module>\n    from transformers.adapters import AutoAdapterModel as AutoModelWithHeads, AdapterConfig\nModuleNotFoundError: No module named 'transformers.adapters'",
+          "pastedContents": {}
+        },
+        {
+          "display": "resolve the import issue with minimalistic code changes in @src/train_regressor_precomputed.py ",
+          "pastedContents": {}
+        },
         {
           "display": "if one epoch takes 1 hours, then how much time is this going to take?",
           "pastedContents": {}
@@ -199,7 +207,7 @@
     "53f071d7-ee92-4add-a498-58e7297de27f": {
       "hasAccess": false,
       "hasAccessNotAsDefault": false,
-      "timestamp": 1760281438217
+      "timestamp": 1760329177548
     }
   },
   "fallbackAvailableWarningThreshold": 0.5,

@@ -10,24 +10,27 @@ from tqdm import tqdm
 from sklearn.model_selection import train_test_split
 import mlflow
 import numpy as np
+from peft import get_peft_model, LoraConfig, PeftModel
 
 # --- Configuration ---
 PARAMS = {
-    'RUN_NAME': 'QWEN3-Full-Finetune-75k',
+    'RUN_NAME': 'QWEN embedding LoRA',
     'DATASET_FOLDER': 'dataset/',
     'MODEL_NAME': 'Qwen/Qwen3-Embedding-0.6B',
-    'MODEL_SAVE_PATH': 'best_model_qwen3_regressor_only',
-    'BATCH_SIZE': 32,
-    'LEARNING_RATE': 2e-5,
-    'NUM_EPOCHS': 5,
-    'DATA_PERCENTAGE': 0.01,
-    'FREEZE_EMBEDDING_MODEL': False,
+    'MODEL_SAVE_PATH': 'best_model_qwen',
+    'BATCH_SIZE': 4,
+    'LEARNING_RATE': 2e-4,
+    'NUM_EPOCHS': 1,
+    'DATA_PERCENTAGE': 0.001,
     'MIXED_PRECISION': True,
     'regressor_width': 256,
-    'regressor_depth': 3,
+    'regressor_depth': 1,
     'WEIGHT_DECAY': 0.01,
     'DROPOUT_RATE': 0.3,
     'EARLY_STOPPING_PATIENCE': 5,
+    'LORA_R': 8,
+    'LORA_ALPHA': 32,
+    'LORA_DROPOUT': 0.3,
 }
 
 # --- Model Definition ---
@@ -100,14 +103,18 @@ def main():
         tokenizer = AutoTokenizer.from_pretrained(PARAMS['MODEL_NAME'], trust_remote_code=True)
         model = AutoModel.from_pretrained(PARAMS['MODEL_NAME'], trust_remote_code=True)
 
-        regressor = Regressor(model.config.hidden_size, PARAMS['regressor_width'], PARAMS['regressor_depth'], PARAMS['DROPOUT_RATE'])
-        model.add_module("regressor", regressor)
+        # --- PEFT LoRA Setup ---
+        lora_config = LoraConfig(
+            r=PARAMS['LORA_R'],
+            lora_alpha=PARAMS['LORA_ALPHA'],
+            lora_dropout=PARAMS['LORA_DROPOUT'],
+            target_modules="all-linear",  # Auto-target all linear layers
+            bias="none",
+        )
+        model = get_peft_model(model, lora_config)
+        model.print_trainable_parameters()
 
-        if PARAMS['FREEZE_EMBEDDING_MODEL']:
-            print("Freezing embedding model parameters...")
-            for name, param in model.named_parameters():
-                if "regressor" not in name:
-                    param.requires_grad = False
+        regressor = Regressor(model.config.hidden_size, PARAMS['regressor_width'], PARAMS['regressor_depth'], PARAMS['DROPOUT_RATE'])
 
         print("Creating datasets and dataloaders...")
         train_dataset = PriceDataset(train_df, tokenizer)
@@ -115,14 +122,12 @@ def main():
         train_dataloader = DataLoader(train_dataset, batch_size=PARAMS['BATCH_SIZE'], shuffle=True, num_workers=16, pin_memory=True)
         val_dataloader = DataLoader(val_dataset, batch_size=PARAMS['BATCH_SIZE'], num_workers=16, pin_memory=True)
 
-        print("Starting fine-tuning...")
+        print("Starting LoRA fine-tuning...")
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         model.to(device)
-        
-        trainable_params = [p for p in model.parameters() if p.requires_grad]
-        print(f"Number of trainable parameters: {sum(p.numel() for p in trainable_params)}")
+        regressor.to(device)
 
-        optimizer = AdamW(trainable_params, lr=PARAMS['LEARNING_RATE'], weight_decay=PARAMS['WEIGHT_DECAY'])
+        optimizer = AdamW(list(model.parameters()) + list(regressor.parameters()), lr=PARAMS['LEARNING_RATE'], weight_decay=PARAMS['WEIGHT_DECAY'])
         loss_fn = SMAPELoss()
         num_training_steps = len(train_dataloader) * PARAMS['NUM_EPOCHS']
         scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=num_training_steps)
@@ -133,6 +138,7 @@ def main():
         
         for epoch in range(PARAMS['NUM_EPOCHS']):
             model.train()
+            regressor.train()
             total_loss = 0.0
             for batch in tqdm(train_dataloader, desc=f"Epoch {epoch + 1}/{PARAMS['NUM_EPOCHS']}"):
                 optimizer.zero_grad()
@@ -147,12 +153,12 @@ def main():
                     sum_embeddings = torch.sum(last_hidden_state * input_mask_expanded, 1)
                     sum_mask = torch.clamp(input_mask_expanded.sum(1), min=1e-9)
                     mean_pooled_embedding = sum_embeddings / sum_mask
-                    predicted_price = model.regressor(mean_pooled_embedding).squeeze(-1)
+                    predicted_price = regressor(mean_pooled_embedding).squeeze(-1)
                     loss = loss_fn(predicted_price, prices)
 
                 scaler.scale(loss).backward()
                 scaler.unscale_(optimizer)
-                torch.nn.utils.clip_grad_norm_(trainable_params, max_norm=1.0)
+                torch.nn.utils.clip_grad_norm_(list(model.parameters()) + list(regressor.parameters()), max_norm=1.0)
                 scaler.step(optimizer)
                 scaler.update()
                 scheduler.step()
@@ -161,6 +167,7 @@ def main():
             avg_train_loss = total_loss / len(train_dataloader)
             
             model.eval()
+            regressor.eval()
             total_val_loss = 0.0
             with torch.no_grad():
                 for batch in tqdm(val_dataloader, desc="Validation"):
@@ -174,7 +181,7 @@ def main():
                         sum_embeddings = torch.sum(last_hidden_state * input_mask_expanded, 1)
                         sum_mask = torch.clamp(input_mask_expanded.sum(1), min=1e-9)
                         mean_pooled_embedding = sum_embeddings / sum_mask
-                        predicted_price = model.regressor(mean_pooled_embedding).squeeze(-1)
+                        predicted_price = regressor(mean_pooled_embedding).squeeze(-1)
                         val_loss = loss_fn(predicted_price, prices)
                     total_val_loss += val_loss.item()
 
@@ -187,9 +194,8 @@ def main():
                 best_val_loss = avg_val_loss
                 patience_counter = 0
                 print(f"Validation loss improved. Saving model to {PARAMS['MODEL_SAVE_PATH']}.")
-                # We save the whole model, but only the regressor part is trained.
                 model.save_pretrained(PARAMS['MODEL_SAVE_PATH'])
-                torch.save(model.regressor.state_dict(), os.path.join(PARAMS['MODEL_SAVE_PATH'], 'regressor.pt'))
+                torch.save(regressor.state_dict(), os.path.join(PARAMS['MODEL_SAVE_PATH'], 'regressor.pt'))
             else:
                 patience_counter += 1
                 if patience_counter >= PARAMS['EARLY_STOPPING_PATIENCE']:
@@ -199,16 +205,20 @@ def main():
         print("Loading best model for inference...")
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         tokenizer = AutoTokenizer.from_pretrained(PARAMS['MODEL_NAME'], trust_remote_code=True)
-        model = AutoModel.from_pretrained(PARAMS['MODEL_SAVE_PATH'], trust_remote_code=True)
-        regressor = Regressor(model.config.hidden_size, PARAMS['regressor_width'], PARAMS['regressor_depth'], PARAMS['DROPOUT_RATE'])
-        regressor.load_state_dict(torch.load(os.path.join(PARAMS['MODEL_SAVE_PATH'], 'regressor.pt')))
-        model.add_module("regressor", regressor)
+
+        # Load the base model and apply PEFT adapter
+        base_model = AutoModel.from_pretrained(PARAMS['MODEL_NAME'], trust_remote_code=True)
+        model = PeftModel.from_pretrained(base_model, PARAMS['MODEL_SAVE_PATH'])
         model.to(device)
 
-        run_inference(model, tokenizer, PARAMS, device)
+        regressor = Regressor(model.config.hidden_size, PARAMS['regressor_width'], PARAMS['regressor_depth'], PARAMS['DROPOUT_RATE'])
+        regressor.load_state_dict(torch.load(os.path.join(PARAMS['MODEL_SAVE_PATH'], 'regressor.pt')))
+        regressor.to(device)
+
+        run_inference(model, regressor, tokenizer, PARAMS, device)
 
 
-def run_inference(model, tokenizer, params, device):
+def run_inference(model, regressor, tokenizer, params, device):
     """
     Runs inference on the test set, creates a submission file, and logs it to MLflow.
     """
@@ -235,6 +245,7 @@ def run_inference(model, tokenizer, params, device):
     test_dataloader = DataLoader(test_dataset, batch_size=params['BATCH_SIZE'], shuffle=False, num_workers=16)
 
     model.eval()
+    regressor.eval()
     all_sample_ids = []
     all_predictions = []
     with torch.no_grad():
@@ -250,8 +261,8 @@ def run_inference(model, tokenizer, params, device):
                 sum_embeddings = torch.sum(last_hidden_state * input_mask_expanded, 1)
                 sum_mask = torch.clamp(input_mask_expanded.sum(1), min=1e-9)
                 mean_pooled_embedding = sum_embeddings / sum_mask
-                predicted_price_log = model.regressor(mean_pooled_embedding).squeeze(-1)
-            
+                predicted_price_log = regressor(mean_pooled_embedding).squeeze(-1)
+
             all_predictions.extend(predicted_price_log.detach().cpu().float().numpy())
 
     final_predictions = np.expm1(all_predictions)
@@ -259,7 +270,7 @@ def run_inference(model, tokenizer, params, device):
     submission_folder = "submission"
     os.makedirs(submission_folder, exist_ok=True)
     timestamp = time.strftime("%Y%m%d-%H%M%S")
-    submission_filename = f"submission_qwen3_regressor_only_{timestamp}.csv"
+    submission_filename = f"submission_qwen3_lora_{timestamp}.csv"
     submission_filepath = os.path.join(submission_folder, submission_filename)
     submission_df.to_csv(submission_filepath, index=False)
     print(f"\nSubmission file saved to {submission_filepath}")
