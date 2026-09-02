@@ -1,3 +1,8 @@
+# Team submission to the Amazon ML Challenge 2025. Forked to my account from the team repo.
+
+
+
+
 # Amazon ML Challenge: Product Price Prediction
 
 This repository contains the code and experiments for our solution to the Amazon ML Challenge, where the goal was to predict product prices based on their catalog information.
