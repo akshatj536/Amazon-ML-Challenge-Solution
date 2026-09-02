@@ -67,4 +67,4 @@ We conducted a series of experiments with different models and techniques to fin
 
 ## Final Approach and Result
 
-After evaluating multiple models, we achieved our best performance by creating a weighted ensemble of predictions from our top-performing **NeoBERT**, **RexBERT**, and **DeBERTaV3-base** models. This ensemble approach secured us the **28th rank** on the public leaderboard of the Amazon ML Challenge.
+After evaluating multiple models, we achieved our best performance by creating a weighted ensemble of predictions from our top-performing **NeoBERT**, **RexBERT**, and **DeBERTaV3-base** models. This ensemble approach secured us the **26th rank** on the public leaderboard of the Amazon ML Challenge.
