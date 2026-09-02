@@ -1,4 +1,4 @@
-# Team submission to the Amazon ML Challenge 2025. Forked to my account from the team repo.
+> Team submission to the Amazon ML Challenge 2025. Forked to my account from the team repo.
 
 
 
